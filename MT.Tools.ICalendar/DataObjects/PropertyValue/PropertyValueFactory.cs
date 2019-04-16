@@ -51,15 +51,15 @@ namespace MT.Tools.ICalendar.DataObjects.PropertyValue
         }
 
         // Calendar User Address
-        public IPropertyValueImpl CreateValue(CalendarUserAddressValue value)
+        public IPropertyValueImpl CreateValue(Uri uri)
         {
-
+            return new CalendarUserAddressValue(uri);
         }
 
         // Period of Time
-        public IPropertyValueImpl CreateValue(PeriodOfTimeValue value)
+        public IPropertyValueImpl CreateValue(DateTime start, DateTime end)
         {
-
+            return new PeriodOfTimeValue(start, end);
         }
 
         // Recurrence Rule

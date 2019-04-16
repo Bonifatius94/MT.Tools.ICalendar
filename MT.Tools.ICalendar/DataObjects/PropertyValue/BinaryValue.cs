@@ -10,14 +10,14 @@ namespace MT.Tools.ICalendar.DataObjects.PropertyValue
 
         public BinaryValue(byte[] bytes)
         {
-            Value = bytes;
+            Bytes = bytes;
         }
 
         #endregion Constructor
 
         #region Members
 
-        public byte[] Value { get; private set; }
+        public byte[] Bytes { get; private set; }
 
         #endregion Members
 
@@ -25,12 +25,18 @@ namespace MT.Tools.ICalendar.DataObjects.PropertyValue
 
         public void Deserialize(string content)
         {
-            throw new NotImplementedException();
+            // parse BASE64 content
+            Bytes = Convert.FromBase64String(content);
+
+            // TODO: check if this works
         }
 
         public string Serialize()
         {
-            throw new NotImplementedException();
+            // generate BASE64 content
+            return Convert.ToBase64String(Bytes);
+
+            // TODO: check if this works
         }
 
         #endregion Methods

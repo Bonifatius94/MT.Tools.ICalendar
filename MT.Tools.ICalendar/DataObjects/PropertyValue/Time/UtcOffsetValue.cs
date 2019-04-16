@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace MT.Tools.ICalendar.DataObjects.PropertyValue
+namespace MT.Tools.ICalendar.DataObjects.PropertyValue.Time
 {
     public class UtcOffsetValue : IPropertyValueImpl
     {

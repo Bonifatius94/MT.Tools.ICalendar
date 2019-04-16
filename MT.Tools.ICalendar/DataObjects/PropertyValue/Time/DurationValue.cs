@@ -2,31 +2,40 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace MT.Tools.ICalendar.DataObjects.PropertyValue
+namespace MT.Tools.ICalendar.DataObjects.PropertyValue.Time
 {
-    public class CalendarUserAddressValue : IPropertyValueImpl
+    public class DurationValue : IPropertyValueImpl
     {
         #region Constructor
 
-        public CalendarUserAddressValue(Uri uri)
+        public DurationValue() { }
+
+        public DurationValue(TimeSpan duration)
         {
-            Uri = uri;
+            Duration = duration;
         }
 
         #endregion Constructor
 
         #region Members
 
-        public Uri Uri { get; private set; }
+        public TimeSpan Duration { get; private set; }
 
         #endregion Members
 
         #region Methods
 
-        // TODO: implement validation function
-
         public void Deserialize(string content)
         {
+            // remove heading and trailing white spaces
+            content = content.Trim();
+
+            // remove '+' sign
+            content = content.Replace("+", "");
+
+            // check if '-' is set
+
+
             throw new NotImplementedException();
         }
 

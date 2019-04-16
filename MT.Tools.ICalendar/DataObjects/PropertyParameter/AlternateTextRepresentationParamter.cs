@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MT.Tools.ICalendar.DataObjects.PropertyValue;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -9,7 +10,7 @@ namespace MT.Tools.ICalendar.DataObjects.PropertyParameter
     {
         #region Members
 
-        public Uri Uri { get; private set; }
+        public UriValue Uri { get; private set; }
 
         #endregion Members
 
@@ -21,9 +22,12 @@ namespace MT.Tools.ICalendar.DataObjects.PropertyParameter
             int uriStart = content.IndexOf('\"') + 1;
             int uriEnd = content.IndexOf('\"', uriStart) - 1;
 
-            // get the uri string from content and create a new uri instance from it
+            // get the uri string from content and 
             string uriContent = content.Substring(uriStart, uriEnd - uriStart);
-            Uri = new Uri(uriContent);
+
+            // create a new uri instance from it
+            Uri = new UriValue();
+            Uri.Deserialize(uriContent);
 
             // TODO: create a value class that gets the content from the uri
         }

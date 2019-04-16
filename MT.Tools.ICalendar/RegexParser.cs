@@ -19,6 +19,7 @@ namespace MT.Tools.ICalendar
         public const string REGEX_ALPHA_DIGIT = "(a-zA-Z0-9)";
         public const string REGEX_ALPHA_DIGIT_HYPHEN = "(a-zA-Z0-9\\-)";
         public const string REGEX_CONTROL = "(\\x00-\\x08\\x0A-\\x1F\\x7F)";
+        public const string REGEX_OPTIONAL_PLUS_MINUS = "((+?)|(-))";
 
         // UTF-8 regex definitions
         public const string REGEX_UTF8_CHAR = "(\\x80-\\xFFFF)";
@@ -30,6 +31,9 @@ namespace MT.Tools.ICalendar
 
         // regex datatypes
         public const string REGEX_URI = "";
+        public const string REGEX_INTEGER = REGEX_OPTIONAL_PLUS_MINUS + REGEX_DIGIT + "+";
+        public const string REGEX_FLOAT = REGEX_OPTIONAL_PLUS_MINUS + REGEX_DIGIT + "+(\\." + REGEX_DIGIT + "+)?";
+        public const string REGEX_DATE = REGEX_DIGIT + "{4}" + "(0(1-9)|1(0-2))(0(1-9)|(1-2)(0-9)|3(0-1))";
 
         #endregion Constants
 
