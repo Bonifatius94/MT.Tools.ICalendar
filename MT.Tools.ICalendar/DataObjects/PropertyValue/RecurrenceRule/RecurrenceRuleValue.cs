@@ -1,11 +1,10 @@
-﻿using MT.Tools.ICalendar.DataObjects.PropertyValue.RecurrenceRule;
-using MT.Tools.ICalendar.Extensions;
+﻿using MT.Tools.ICalendar.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace MT.Tools.ICalendar.DataObjects.PropertyValue
+namespace MT.Tools.ICalendar.DataObjects.PropertyValue.RecurrenceRule
 {
     public enum RecurrenceFrequency
     {
@@ -22,9 +21,11 @@ namespace MT.Tools.ICalendar.DataObjects.PropertyValue
     {
         #region Constructor
 
-        public RecurrenceRuleValue(RecurrenceFrequency frequency, )
-        {
+        public RecurrenceRuleValue() { }
 
+        public RecurrenceRuleValue(RecurrenceFrequency frequency)
+        {
+            // TODO: add missing parameters
         }
 
         #endregion Constructor
@@ -41,6 +42,8 @@ namespace MT.Tools.ICalendar.DataObjects.PropertyValue
         // individual parts must only accur once
         // frequency part has to be specified once and is always the first parameter (when serializing), but should be parsed correctly at another position (when deserializing)
         // 
+
+        // TODO: implement missing parser logic
 
         public void Deserialize(string content)
         {
@@ -61,7 +64,7 @@ namespace MT.Tools.ICalendar.DataObjects.PropertyValue
                 {
                     Frequency = deserializeRecurrenceFrequency(valueAsString);
                 }
-                if (part.StartsWith("COUNT") || content.StartsWith("UNTIL"))
+                else if (part.StartsWith("COUNT") || content.StartsWith("UNTIL"))
                 {
                     Delimiter = new DelimiterRule();
                     Delimiter.Deserialize(part);

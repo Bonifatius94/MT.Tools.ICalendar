@@ -6,5 +6,6 @@ namespace MT.Tools.ICalendar.DataObjects.PropertyValue
 {
     public interface IPropertyValueImpl : ISerializableObject
     {
+        // nothing to do here ...
     }
 }

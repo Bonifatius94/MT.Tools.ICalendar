@@ -1,122 +1,122 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿//using System;
+//using System.Collections.Generic;
+//using System.Text;
 
-namespace MT.Tools.ICalendar.DataObjects.PropertyValue
-{
-    public class PropertyValueFactory
-    {
-        #region Constructor
+//namespace MT.Tools.ICalendar.DataObjects.PropertyValue
+//{
+//    public static class PropertyValueFactory
+//    {
+//        #region Constructor
 
-        // Boolean
-        public IPropertyValueImpl CreateValue(bool value)
-        {
-            return new SimplePropertyValue(value);
-        }
+//        // Boolean
+//        public static IPropertyValueImpl CreateValue(bool value)
+//        {
+//            return new SimplePropertyValue(value);
+//        }
 
-        // Duration + TimeOfDay
-        public IPropertyValueImpl CreateValue(TimeSpan value, bool isDuration)
-        {
-            return new SimplePropertyValue(value, isDuration);
-        }
+//        // Duration + TimeOfDay
+//        public static IPropertyValueImpl CreateValue(TimeSpan value, bool isDuration)
+//        {
+//            return new SimplePropertyValue(value, isDuration);
+//        }
 
-        // Float
-        public IPropertyValueImpl CreateValue(float value)
-        {
-            return new SimplePropertyValue(value);
-        }
+//        // Float
+//        public static IPropertyValueImpl CreateValue(float value)
+//        {
+//            return new SimplePropertyValue(value);
+//        }
 
-        // Integer (32-Bit)
-        public IPropertyValueImpl CreateValue(int value)
-        {
-            return new SimplePropertyValue(value);
-        }
+//        // Integer (32-Bit)
+//        public static IPropertyValueImpl CreateValue(int value)
+//        {
+//            return new SimplePropertyValue(value);
+//        }
 
-        // Text
-        public IPropertyValueImpl CreateValue(string value)
-        {
-            return new SimplePropertyValue(value);
-        }
+//        // Text
+//        public static IPropertyValueImpl CreateValue(string value)
+//        {
+//            return new SimplePropertyValue(value);
+//        }
 
-        // Date + DateTime
-        public IPropertyValueImpl CreateValue(DateTime value, bool isOnlyDate = false)
-        {
-            return new SimplePropertyValue(value, isOnlyDate);
-        }
+//        // Date + DateTime
+//        public static IPropertyValueImpl CreateValue(DateTime value, bool isOnlyDate = false)
+//        {
+//            return new SimplePropertyValue(value, isOnlyDate);
+//        }
 
-        // Binary
-        public IPropertyValueImpl CreateValue(byte[] bytes)
-        {
-            return new BinaryValue(bytes);
-        }
+//        // Binary
+//        public static IPropertyValueImpl CreateValue(byte[] bytes)
+//        {
+//            return new BinaryValue(bytes);
+//        }
 
-        // Calendar User Address
-        public IPropertyValueImpl CreateValue(Uri uri)
-        {
-            return new CalendarUserAddressValue(uri);
-        }
+//        // Calendar User Address
+//        public static IPropertyValueImpl CreateValue(Uri uri)
+//        {
+//            return new CalendarUserAddressValue(uri);
+//        }
 
-        // Period of Time
-        public IPropertyValueImpl CreateValue(DateTime start, DateTime end)
-        {
-            return new PeriodOfTimeValue(start, end);
-        }
+//        // Period of Time
+//        public static IPropertyValueImpl CreateValue(DateTime start, DateTime end)
+//        {
+//            return new PeriodOfTimeValue(start, end);
+//        }
 
-        // Recurrence Rule
-        public IPropertyValueImpl CreateValue(RecurrenceRuleValue value)
-        {
+//        // Recurrence Rule
+//        public static IPropertyValueImpl CreateValue(RecurrenceRuleValue value)
+//        {
 
-        }
+//        }
 
-        // Uri
-        public IPropertyValueImpl CreateValue(Uri value)
-        {
-            Value = new SimplePropertyValue(value);
-            Type = PropertyValueType.Uri;
-        }
+//        // Uri
+//        public static IPropertyValueImpl CreateValue(Uri value)
+//        {
+//            Value = new SimplePropertyValue(value);
+//            Type = PropertyValueType.Uri;
+//        }
 
-        // UTC Offset
-        public IPropertyValueImpl CreateValue(TimeZoneInfo localZone)
-        {
+//        // UTC Offset
+//        public static IPropertyValueImpl CreateValue(TimeZoneInfo localZone)
+//        {
 
-        }
+//        }
 
-        #endregion Constructor
+//        #endregion Constructor
 
-        #region Members
+//        #region Members
 
-        public IPropertyValueImpl Value { get; private set; }
-        public PropertyValueType Type { get; private set; }
+//        public IPropertyValueImpl Value { get; private set; }
+//        public PropertyValueType Type { get; private set; }
 
-        #endregion Members
+//        #endregion Members
 
-        #region Methods
+//        #region Methods
 
-        #region Deserialize
+//        #region Deserialize
 
-        public void Deserialize(string content)
-        {
-            var type = parseType(content);
+//        public void Deserialize(string content)
+//        {
+//            var type = parseType(content);
 
-            throw new NotImplementedException();
-        }
+//            throw new NotImplementedException();
+//        }
 
-        private PropertyValueType parseType(string content)
-        {
-            throw new NotImplementedException();
-        }
+//        private PropertyValueType parseType(string content)
+//        {
+//            throw new NotImplementedException();
+//        }
 
-        #endregion Deserialize
+//        #endregion Deserialize
 
-        #region Serialize
+//        #region Serialize
 
-        public string Serialize()
-        {
-            throw new NotImplementedException();
-        }
+//        public string Serialize()
+//        {
+//            throw new NotImplementedException();
+//        }
 
-        #endregion Serialize
+//        #endregion Serialize
 
-        #endregion Methods
-    }
-}
+//        #endregion Methods
+//    }
+//}

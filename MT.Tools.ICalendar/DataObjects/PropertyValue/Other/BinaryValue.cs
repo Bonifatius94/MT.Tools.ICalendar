@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace MT.Tools.ICalendar.DataObjects.PropertyValue
+namespace MT.Tools.ICalendar.DataObjects.PropertyValue.Other
 {
     public class BinaryValue : IPropertyValueImpl
     {
         #region Constructor
+
+        public BinaryValue() { }
 
         public BinaryValue(byte[] bytes)
         {
@@ -17,7 +19,7 @@ namespace MT.Tools.ICalendar.DataObjects.PropertyValue
 
         #region Members
 
-        public byte[] Bytes { get; private set; }
+        public byte[] Bytes { get; set; } = new byte[0];
 
         #endregion Members
 

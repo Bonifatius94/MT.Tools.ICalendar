@@ -2,22 +2,32 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace MT.Tools.ICalendar.DataObjects.PropertyValue
+namespace MT.Tools.ICalendar.DataObjects.PropertyValue.Other
 {
+    // TODO: determine what is the difference between this and UriValue
+
     public class CalendarUserAddressValue : IPropertyValueImpl
     {
         #region Constructor
 
+        public CalendarUserAddressValue() { }
+
         public CalendarUserAddressValue(Uri uri)
         {
-            Uri = uri;
+            _uri = new UriValue(uri);
         }
 
         #endregion Constructor
 
         #region Members
 
-        public Uri Uri { get; private set; }
+        private UriValue _uri;
+
+        public Uri Address
+        {
+            get { return _uri.Value; }
+            set { _uri.Value = value; }
+        }
 
         #endregion Members
 
@@ -27,12 +37,12 @@ namespace MT.Tools.ICalendar.DataObjects.PropertyValue
 
         public void Deserialize(string content)
         {
-            throw new NotImplementedException();
+            _uri = ObjectSerializer.Deserialize<UriValue>(content);
         }
 
         public string Serialize()
         {
-            throw new NotImplementedException();
+            return _uri.Serialize();
         }
 
         #endregion Methods

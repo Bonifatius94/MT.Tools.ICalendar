@@ -42,12 +42,10 @@ namespace MT.Tools.ICalendar.DataObjects.PropertyValue.Time
             if (parts.Length != 2) { throw new ArgumentException($"Invalid datetime format ({ content }) detected!"); }
 
             // deserialize date part
-            _date = new DateValue();
-            _date.Deserialize(parts[0]);
+            _date = ObjectSerializer.Deserialize<DateValue>(parts[0]);
 
             // deserialize time part
-            _time = new TimeValue();
-            _time.Deserialize(parts[1]);
+            _time = ObjectSerializer.Deserialize<TimeValue>(parts[1]);
         }
 
         public string Serialize()
