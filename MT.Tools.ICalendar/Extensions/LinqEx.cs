@@ -21,4 +21,16 @@ namespace MT.Tools.ICalendar.Extensions
 
         #endregion Methods
     }
+
+    public static class DictionaryEx
+    {
+        #region Methods
+
+        public static TValue GetValueOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key)
+        {
+            return dict.ContainsKey(key) ? dict[key] : default(TValue);
+        }
+
+        #endregion Methods
+    }
 }

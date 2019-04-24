@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MT.Tools.ICalendar.DataObjects.PropertyValue.Time;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -56,9 +57,8 @@ namespace MT.Tools.ICalendar.DataObjects.PropertyValue.RecurrenceRule
             }
             else if (content.StartsWith("UNTIL"))
             {
-                var temp = new SimplePropertyValue();
-                temp.Deserialize(valueAsString);
-                EndDate = (DateTime)temp.Value;
+                var temp = ObjectSerializer.Deserialize<DateTimeValue>(valueAsString);
+                EndDate = temp.DateTime;
                 Type = DelimiterRuleType.Until;
             }
             else
@@ -69,7 +69,7 @@ namespace MT.Tools.ICalendar.DataObjects.PropertyValue.RecurrenceRule
 
         public string Serialize()
         {
-            return (Type == DelimiterRuleType.Count) ? $"COUNT={ RepetitionsCount }" : $"UNTIL={ new SimplePropertyValue(EndDate).Serialize() }";
+            return (Type == DelimiterRuleType.Count) ? $"COUNT={ RepetitionsCount }" : $"UNTIL={ new DateTimeValue(EndDate).Serialize() }";
         }
 
         #endregion Methods
