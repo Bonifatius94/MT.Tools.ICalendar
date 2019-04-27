@@ -8,9 +8,20 @@ namespace MT.Tools.ICalendar.DataObjects
 {
     public class CalendarFile : ISerializableObject
     {
+        #region Constructor
+
+        public CalendarFile() { }
+
+        public CalendarFile(IEnumerable<CalendarObject> objects)
+        {
+            Objects = objects;
+        }
+
+        #endregion Constructor
+
         #region Members
 
-        // TODO: implement missing properties
+        public IEnumerable<CalendarObject> Objects { get; set; } = new List<CalendarObject>();
 
         #endregion Members
 

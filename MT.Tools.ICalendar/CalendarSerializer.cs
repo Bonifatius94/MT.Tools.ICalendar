@@ -63,7 +63,7 @@ namespace MT.Tools.ICalendar
             var foldedContent = Encoding.Default.GetString(unicodeBytes);
 
             // unfold content
-            string unfoldedContent = new FoldHelper().UnfoldContent(foldedContent);
+            string unfoldedContent = FoldHelper.UnfoldContent(foldedContent);
 
             // parse content and retrieve the object tree
             var calendar = new CalendarFile();
@@ -93,7 +93,7 @@ namespace MT.Tools.ICalendar
             string unfoldedContent = calendarFile.Serialize();
 
             // fold the unfolded content
-            var foldedContent = new FoldHelper().FoldContent(unfoldedContent);
+            var foldedContent = FoldHelper.FoldContent(unfoldedContent);
 
             // convert unicode string to UTF-8 bytes
             var unicodeBytes = Encoding.Default.GetBytes(foldedContent);
@@ -104,6 +104,53 @@ namespace MT.Tools.ICalendar
             {
                 writer.Write(utf8Bytes);
             }
+        }
+
+        #endregion Methods
+    }
+
+    public static class FoldHelper
+    {
+        #region Constants
+
+        public const int MAX_LINE_COUNT = 75;
+
+        //public const byte CHAR_LF = 0x0A;
+        //public const byte CHAR_CR = 0x0D;
+        //public const byte CHAR_SPACE = 0x20;
+
+        #endregion Constants
+
+        #region Methods
+
+        public static string FoldContent(string unfoldedContent)
+        {
+            var builder = new StringBuilder();
+            var lines = unfoldedContent.Split("\r\n", StringSplitOptions.RemoveEmptyEntries);
+
+            foreach (string line in lines)
+            {
+                string rest = line;
+                int charsToTake = (rest.Length > MAX_LINE_COUNT) ? MAX_LINE_COUNT : rest.Length;
+
+                while (charsToTake > MAX_LINE_COUNT)
+                {
+                    string append = rest.Substring(0, charsToTake);
+                    builder.Append(append + "\r\n ");
+
+                    rest = rest.Substring(charsToTake, rest.Length - charsToTake);
+                    charsToTake = (rest.Length > MAX_LINE_COUNT) ? MAX_LINE_COUNT : rest.Length;
+                }
+
+                builder.Append(rest + "\r\n");
+            }
+
+            return builder.ToString();
+        }
+
+        public static string UnfoldContent(string foldedContent)
+        {
+            return foldedContent.Replace("\r\n ", "");
         }
 
         #endregion Methods
