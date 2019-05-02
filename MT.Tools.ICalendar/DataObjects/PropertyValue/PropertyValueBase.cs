@@ -6,6 +6,7 @@ namespace MT.Tools.ICalendar.DataObjects.PropertyValue
 {
     public enum PropertyValueType
     {
+        // RFC 5545 types
         Binary,
         Boolean,
         CalendarUserAddress,
@@ -20,7 +21,10 @@ namespace MT.Tools.ICalendar.DataObjects.PropertyValue
         Text,
         Uri,
         UtcOffset,
-        Weekday
+        Weekday,
+
+        // additional types
+        Unknown
     }
 
     public interface IPropertyValueImpl : ISerializableObject
