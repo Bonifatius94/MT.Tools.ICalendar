@@ -21,6 +21,8 @@ namespace MT.Tools.ICalendar.DataObjects.PropertyValue.Primitive
 
         public bool Value { get; set; }
 
+        public PropertyValueType Type => PropertyValueType.Boolean;
+
         #endregion Members
 
         #region Methods

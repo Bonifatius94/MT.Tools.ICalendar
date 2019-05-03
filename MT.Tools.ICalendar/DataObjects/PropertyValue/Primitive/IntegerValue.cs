@@ -26,6 +26,8 @@ namespace MT.Tools.ICalendar.DataObjects.PropertyValue.Primitive
 
         public int Value { get; set; }
 
+        public PropertyValueType Type => PropertyValueType.Integer32;
+
         #endregion Members
 
         #region Methods

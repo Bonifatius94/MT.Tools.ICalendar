@@ -23,6 +23,8 @@ namespace MT.Tools.ICalendar.DataObjects.PropertyValue.Time
         public bool IsUtcTime { get; private set; }
         public TimeSpan Time { get; private set; }
 
+        public PropertyValueType Type => PropertyValueType.Time;
+
         #endregion Members
 
         public void Deserialize(string content)

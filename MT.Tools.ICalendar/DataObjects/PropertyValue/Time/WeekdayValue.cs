@@ -21,6 +21,8 @@ namespace MT.Tools.ICalendar.DataObjects.PropertyValue.Time
 
         public DayOfWeek Day { get; set; }
 
+        public PropertyValueType Type => PropertyValueType.Weekday;
+
         #endregion Members
 
         #region Methods

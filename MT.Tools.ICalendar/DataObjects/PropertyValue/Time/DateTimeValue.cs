@@ -26,6 +26,8 @@ namespace MT.Tools.ICalendar.DataObjects.PropertyValue.Time
         public DateTime DateTime { get { return _date.Date + _time.Time; } }
         public bool IsUtcTime { get { return _time.IsUtcTime; } }
 
+        public PropertyValueType Type => PropertyValueType.DateTime;
+
         #endregion Members
 
         #region Methods

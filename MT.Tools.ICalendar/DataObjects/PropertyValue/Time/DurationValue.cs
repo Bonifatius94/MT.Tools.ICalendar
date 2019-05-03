@@ -21,6 +21,8 @@ namespace MT.Tools.ICalendar.DataObjects.PropertyValue.Time
 
         public TimeSpan Duration { get; private set; }
 
+        public PropertyValueType Type => PropertyValueType.Duration;
+
         #endregion Members
 
         #region Methods

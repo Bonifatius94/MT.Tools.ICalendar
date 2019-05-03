@@ -68,7 +68,7 @@ namespace MT.Tools.ICalendar.DataObjects.PropertyValue.RecurrenceRule
             var parts = content.Split('=', StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()).ToArray();
 
             // parse rule type
-            var ruleType = RuleTypeHelper.DeserializeRuleType(parts[0]);
+            var ruleType = ObjectSerializer.Deserialize<EnumValue<ByListRuleType>>(parts[0]).Value;
 
             // parse list
             var listParts = parts[1].Split(',', StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()).ToArray();
@@ -77,7 +77,7 @@ namespace MT.Tools.ICalendar.DataObjects.PropertyValue.RecurrenceRule
 
         public string Serialize()
         {
-            string rule = RuleTypeHelper.SerializeRuleType(RuleType);
+            string rule = new EnumValue<ByListRuleType>(RuleType).Serialize();
             string list = List.Select(x => x.ToString()).Aggregate((x, y) => x + "," + y);
 
             return $"{ rule }={ list }";
@@ -115,7 +115,7 @@ namespace MT.Tools.ICalendar.DataObjects.PropertyValue.RecurrenceRule
             var parts = content.Split('=', StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()).ToArray();
 
             // parse rule type
-            var ruleType = RuleTypeHelper.DeserializeRuleType(parts[0]);
+            var ruleType = ObjectSerializer.Deserialize<EnumValue<ByListRuleType>>(parts[0]).Value;
 
             // parse list
             var listParts = parts[1].Split(',', StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()).ToArray();
@@ -137,27 +137,10 @@ namespace MT.Tools.ICalendar.DataObjects.PropertyValue.RecurrenceRule
 
         public string Serialize()
         {
-            string rule = RuleTypeHelper.SerializeRuleType(RuleType);
+            string rule = new EnumValue<ByListRuleType>(RuleType).Serialize();
             string list = List.Select(x => $"{ ((x.Item2 != 0) ? x.Item2.ToString() : "") }{ new WeekdayValue(x.Item1).Serialize() }").Aggregate((x, y) => x + "," + y);
 
             return $"{ rule }={ list }";
-        }
-
-        #endregion Methods
-    }
-
-    public static class RuleTypeHelper
-    {
-        #region Methods
-
-        public static ByListRuleType DeserializeRuleType(string content)
-        {
-            return Enum.Parse<ByListRuleType>(content, true);
-        }
-
-        public static string SerializeRuleType(ByListRuleType type)
-        {
-            return type.ToString().ToUpper();
         }
 
         #endregion Methods

@@ -1,6 +1,8 @@
 ﻿using MT.Tools.ICalendar.DataObjects.CalendarComponent;
+using MT.Tools.ICalendar.DataObjects.Property;
 using MT.Tools.ICalendar.DataObjects.PropertyValue;
 using MT.Tools.ICalendar.DataObjects.PropertyValue.Primitive;
+using MT.Tools.ICalendar.Extensions;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,51 +11,65 @@ using System.Text;
 
 namespace MT.Tools.ICalendar.DataObjects
 {
-    public class CalendarObject : ISerializableObject
+    public class CalendarObject : ISerializableObject, IPropertyCollection
     {
+        #region Constants
+
+        public const string PROPERTY_VERSION = "VERSION";
+        public const string PROPERTY_PRODID = "PRODID";
+        public const string PROPERTY_CALSCALE = "CALSCALE";
+        public const string PROPERTY_METHOD = "METHOD";
+
+        public static readonly string[] NonCustomProperties = new string[] { PROPERTY_VERSION, PROPERTY_PRODID, PROPERTY_CALSCALE, PROPERTY_METHOD };
+
+        #endregion Constants
+
         #region Constructor
 
         public CalendarObject() { }
 
-        public CalendarObject(CalendarProperty<TextValue> prodId, CalendarProperty<TextValue> version, IEnumerable<ICalendarComponent> components, 
-            CalendarProperty<TextValue> calScale = null, CalendarProperty<TextValue> method = null, IEnumerable<CalendarProperty<TextValue>> additionalproperties = null)
+        public CalendarObject(string prodId, string version, IEnumerable<ICalendarComponent> components, 
+            string calScale = null, string method = null, IEnumerable<ICalendarProperty> additionalproperties = null)
         {
-            // required parameters
-            ProductId = prodId;
-            Version = version;
-            Components = components;
+            // init properties
+            var properties = new List<ICalendarProperty>()
+            {
+                new CalendarProperty<TextValue>(PROPERTY_VERSION, new TextValue(version)),
+                new CalendarProperty<TextValue>(PROPERTY_PRODID, new TextValue(prodId)),
+                new CalendarProperty<TextValue>(PROPERTY_CALSCALE, new TextValue(calScale)),
+                new CalendarProperty<TextValue>(PROPERTY_METHOD, new TextValue(method))
+            }
+            .Union(additionalproperties ?? new ICalendarProperty[0]);
 
-            // optional parameters
-            CalScale = calScale;
-            Method = method;
-            AdditionalProperties = additionalproperties;
+            // set properties / components
+            Properties = properties;
+            Components = components;
         }
 
         #endregion Constructor
 
         #region Members
 
-        // required, unique properties
-        public CalendarProperty<TextValue> ProductId { get; set; }
-        public CalendarProperty<TextValue> Version { get; set; }
+        /// <summary>
+        /// The properties of the iCalendar object.
+        /// </summary>
+        public IEnumerable<ICalendarProperty> Properties { get; } = new List<GenericCalendarProperty>();
 
-        // optional, unique properties
-        public CalendarProperty<TextValue> CalScale { get; set; } = null;
-        public CalendarProperty<TextValue> Method { get; set; } = null;
-
-        // optional, non-unique properties
-        public IEnumerable<CalendarProperty<TextValue>> AdditionalProperties { get; set; } = new List<CalendarProperty<TextValue>>();
-
-        // the component of the calendar object
+        /// <summary>
+        /// The components of the iCalendar object.
+        /// </summary>
         public IEnumerable<ICalendarComponent> Components { get; set; } = new List<ICalendarComponent>();
 
-        // computed list of all properties
-        public IEnumerable<CalendarProperty<TextValue>> AllProperties
-        {
-            get { return new List<CalendarProperty<TextValue>>() { ProductId, Version, CalScale, Method }.Where(x => x != null).Union(AdditionalProperties); }
-        }
+        // required, unique properties
+        public TextValue ProductId { get { return findPropertyValue(PROPERTY_PRODID) as TextValue; } }
+        public TextValue Version { get { return findPropertyValue(PROPERTY_VERSION) as TextValue; } }
 
-        public SimplePropertyCollection Properties => new SimplePropertyCollection(new AllProperties.Select(x => x.AsPair()));
+        // optional, unique properties
+        public TextValue CalScale { get { return findPropertyValue(PROPERTY_CALSCALE) as TextValue; } }
+        public TextValue Method { get { return findPropertyValue(PROPERTY_METHOD) as TextValue; } }
+
+        // optional, non-unique properties
+        public IEnumerable<ICalendarProperty> AdditionalProperties { get { return Properties.Where(x => !NonCustomProperties.Any(y => y.Equals(x))); } }
 
         #endregion Members
 
@@ -96,17 +112,8 @@ namespace MT.Tools.ICalendar.DataObjects
         {
             foreach (var line in contentLines)
             {
-                var property = ObjectSerializer.Deserialize<CalendarProperty<TextValue>>(line);
-
-                // apply property to members
-                switch (property.Key.ToUpper())
-                {
-                    case "VERSION":  Version = property;                    break;
-                    case "PRODID":   ProductId = property;                  break;
-                    case "CALSCALE": CalScale = property;                   break;
-                    case "METHOD":   Method = property;                     break;
-                    default:         AdditionalProperties.Append(property); break;
-                }
+                var property = ObjectSerializer.Deserialize<GenericCalendarProperty>(line);
+                Properties.Append(property);
             }
         }
 
@@ -193,13 +200,19 @@ namespace MT.Tools.ICalendar.DataObjects
         public string Serialize()
         {
             // serialize properties and component
-            string propertiesContent = AllProperties.Select(x => x.Serialize()).Aggregate((x, y) => x + "\r\n" + y);
+            string propertiesContent = Properties.Select(x => x.Serialize()).Aggregate((x, y) => x + "\r\n" + y);
             string componentContent = Components.Select(x => x.Serialize()).Aggregate((x, y) => x + "\r\n" + y);
 
             // put contents together and add begin / end tags
             string content = $"BEGIN:VCALENDAR\r\n{ propertiesContent }\r\n{ componentContent }\r\nEND:VCALENDAR";
             return content;
         }
+
+        #region Helpers
+
+        private IPropertyValueImpl findPropertyValue(string key) => Properties.Where(x => x.Key.Equals(key)).First().Value;
+
+        #endregion Helpers
 
         #endregion Methods
     }

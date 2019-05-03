@@ -21,6 +21,8 @@ namespace MT.Tools.ICalendar.DataObjects.PropertyValue.Other
 
         public byte[] Bytes { get; set; } = new byte[0];
 
+        public PropertyValueType Type => PropertyValueType.Binary;
+
         #endregion Members
 
         #region Methods

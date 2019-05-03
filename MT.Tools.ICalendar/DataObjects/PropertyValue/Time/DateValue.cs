@@ -21,6 +21,8 @@ namespace MT.Tools.ICalendar.DataObjects.PropertyValue.Time
 
         public DateTime Date { get; private set; }
 
+        public PropertyValueType Type => PropertyValueType.Date;
+
         #endregion Members
 
         #region Methods

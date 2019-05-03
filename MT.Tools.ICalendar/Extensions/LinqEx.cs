@@ -26,9 +26,35 @@ namespace MT.Tools.ICalendar.Extensions
     {
         #region Methods
 
-        public static TValue GetValueOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key)
+        //public static TValue GetValueOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key)
+        //{
+        //    return dict.ContainsKey(key) ? dict[key] : default(TValue);
+        //}
+
+        public static Dictionary<TKey, TValue> ExceptKeys<TKey, TValue>(this Dictionary<TKey, TValue> dict, IEnumerable<TKey> exceptKeys)
         {
-            return dict.ContainsKey(key) ? dict[key] : default(TValue);
+            // get the keys to be extracted in O(n)
+            var keysDist = dict.Keys.Distinct().Except(exceptKeys.Distinct()).ToHashSet();
+
+            // extract the given key-value-pairs from the dictionary in O(n) (HashSet.Contains() is O(1)!!!)
+            var extractedPairs = dict.Where(x => keysDist.Contains(x.Key));
+
+            // create a new dictionary with the extracted key-value-pairs in O(n)
+            return new Dictionary<TKey, TValue>(extractedPairs);
+        }
+
+        public static void Update<TKey, TValue>(this Dictionary<TKey, TValue> dict, TKey key, TValue value)
+        {
+            if (dict.ContainsKey(key))
+            {
+                // update value of an already added key-value-pair
+                dict[key] = value;
+            }
+            else
+            {
+                // add new key-value-pair
+                dict.Add(key, value);
+            }
         }
 
         #endregion Methods

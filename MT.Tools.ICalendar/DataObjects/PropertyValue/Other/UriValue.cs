@@ -26,6 +26,8 @@ namespace MT.Tools.ICalendar.DataObjects.PropertyValue.Other
 
         public Uri Value { get; set; }
 
+        public PropertyValueType Type => PropertyValueType.Uri;
+
         #endregion Members
 
         #region Methods

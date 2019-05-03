@@ -1,4 +1,5 @@
-﻿using MT.Tools.ICalendar.DataObjects.PropertyValue.Primitive;
+﻿using MT.Tools.ICalendar.DataObjects.Property;
+using MT.Tools.ICalendar.DataObjects.PropertyValue.Primitive;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,7 @@ namespace MT.Tools.ICalendar.DataObjects.CalendarComponent
 
         public CustomComponent() { }
 
-        public CustomComponent(string token, CalendarProperty<TextValue> property)
+        public CustomComponent(string token, ICalendarProperty<TextValue> property)
         {
             Token = token;
             Property = property;
@@ -26,7 +27,7 @@ namespace MT.Tools.ICalendar.DataObjects.CalendarComponent
         public CalendarComponentType Type => CalendarComponentType.Custom;
 
         public string Token { get; set; }
-        public CalendarProperty<TextValue> Property { get; set; }
+        public ICalendarProperty<TextValue> Property { get; set; }
 
         #endregion Members
 

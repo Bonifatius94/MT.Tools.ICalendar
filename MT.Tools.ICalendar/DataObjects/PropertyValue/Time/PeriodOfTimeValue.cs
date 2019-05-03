@@ -47,6 +47,8 @@ namespace MT.Tools.ICalendar.DataObjects.PropertyValue.Time
         public DateTime End { get { return _end.DateTime; } }
         public TimeSpan Duration { get { return _duration.Duration; } }
 
+        public PropertyValueType Type => PropertyValueType.PeriodOfTime;
+
         #endregion Members
 
         #region Methods

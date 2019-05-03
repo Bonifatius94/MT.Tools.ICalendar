@@ -26,6 +26,8 @@ namespace MT.Tools.ICalendar.DataObjects.PropertyValue.Primitive
 
         public float Value { get; set; }
 
+        public PropertyValueType Type => PropertyValueType.Float;
+
         #endregion Members
 
         #region Methods

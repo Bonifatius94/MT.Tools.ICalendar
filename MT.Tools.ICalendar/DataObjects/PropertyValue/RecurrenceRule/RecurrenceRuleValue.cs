@@ -42,11 +42,13 @@ namespace MT.Tools.ICalendar.DataObjects.PropertyValue.RecurrenceRule
 
         #region Members
 
+        public PropertyValueType Type => PropertyValueType.RecurrenceRule;
+
         public RecurrenceFrequency Frequency { get; set; }
         public int Interval { get; set; }
         public DelimiterRule Delimiter { get; set; } = null;
         public DayOfWeek WeekStart { get; set; } = DayOfWeek.Monday;
-        public IDictionary<ByListRuleType, IByListRule> ListRules { get; } = new Dictionary<ByListRuleType, IByListRule>();
+        public Dictionary<ByListRuleType, IByListRule> ListRules { get; } = new Dictionary<ByListRuleType, IByListRule>();
 
         // computed read-only properties
         public IByListRule BySecond { get { return ListRules.GetValueOrDefault(ByListRuleType.BySecond); } }
@@ -117,7 +119,7 @@ namespace MT.Tools.ICalendar.DataObjects.PropertyValue.RecurrenceRule
                 if (rule.StartsWith("FREQ"))
                 {
                     // parse frequency
-                    Frequency = RecurrenceFrequencyHelper.DeserializeRecurrenceFrequency(valueAsString);
+                    Frequency = ObjectSerializer.Deserialize<EnumValue<RecurrenceFrequency>>(valueAsString).Value;
                 }
                 else if (rule.StartsWith("INTERVAL"))
                 {
@@ -142,7 +144,7 @@ namespace MT.Tools.ICalendar.DataObjects.PropertyValue.RecurrenceRule
             return new List<string>() {
 
                 // serialize frequency
-                $"FREQ={ RecurrenceFrequencyHelper.SerializeRecurrenceFrequency(Frequency) }",
+                $"FREQ={ new EnumValue<RecurrenceFrequency>(Frequency).Serialize() }",
 
                 // serialize delimiter rule (if existing)
                 (Delimiter != null) ? $"{ Delimiter.Serialize() }" : "",
@@ -171,23 +173,6 @@ namespace MT.Tools.ICalendar.DataObjects.PropertyValue.RecurrenceRule
         }
 
         #endregion Helpers
-
-        #endregion Methods
-    }
-
-    public static class RecurrenceFrequencyHelper
-    {
-        #region Methods
-
-        public static string SerializeRecurrenceFrequency(RecurrenceFrequency frequency)
-        {
-            return frequency.ToString().ToUpper();
-        }
-
-        public static RecurrenceFrequency DeserializeRecurrenceFrequency(string content)
-        {
-            return Enum.Parse<RecurrenceFrequency>(content, true);
-        }
 
         #endregion Methods
     }

@@ -26,6 +26,8 @@ namespace MT.Tools.ICalendar.DataObjects.PropertyValue.Time
 
         private TimeSpan UtcOffset { get; set; }
 
+        public PropertyValueType Type => PropertyValueType.UtcOffset;
+
         #endregion Members
 
         #region Methods

@@ -24,15 +24,26 @@ namespace MT.Tools.ICalendar.DataObjects.PropertyValue
 
         #region Members
 
+        /// <summary>
+        /// The type of the property value.
+        /// </summary>
         public PropertyValueType Type { get; } = PropertyValueType.Unknown;
 
+        /// <summary>
+        /// The original serialized content of the property value.
+        /// </summary>
         public string SerializedValue { get; private set; }
 
         #endregion Members
 
         #region Methods
 
-        public object GetValue(PropertyValueType? type = null)
+        /// <summary>
+        /// Retrieve the property value deserialized as a specific value type.
+        /// </summary>
+        /// <param name="type">The type to be deserialized (if null the type from the Type member is used)</param>
+        /// <returns>a deserialized property value</returns>
+        public IPropertyValueImpl GetValue(PropertyValueType? type = null)
         {
             switch (type ?? Type)
             {
@@ -51,9 +62,49 @@ namespace MT.Tools.ICalendar.DataObjects.PropertyValue
                 case PropertyValueType.Uri:                 return ObjectSerializer.Deserialize<UriValue>(SerializedValue);
                 case PropertyValueType.UtcOffset:           return ObjectSerializer.Deserialize<UtcOffsetValue>(SerializedValue);
                 case PropertyValueType.Weekday:             return ObjectSerializer.Deserialize<WeekdayValue>(SerializedValue);
-                default: throw new ArgumentException("Unknown value type cannot be converted!");
+                default: throw new ArgumentException("Unknown value type! Therefore the value cannot be converted!");
             }
         }
+
+        #region Cast
+
+        public BinaryValue AsBinary() => GetValue(PropertyValueType.Binary) as BinaryValue;
+
+        public BooleanValue AsBoolean() => GetValue(PropertyValueType.Boolean) as BooleanValue;
+
+        public CalendarUserAddressValue AsCalendarUserAddress() => GetValue(PropertyValueType.CalendarUserAddress) as CalendarUserAddressValue;
+
+        public DateValue AsDate() => GetValue(PropertyValueType.Date) as DateValue;
+
+        public DateTimeValue AsDateTime() => GetValue(PropertyValueType.DateTime) as DateTimeValue;
+
+        public DurationValue AsDuration() => GetValue(PropertyValueType.Duration) as DurationValue;
+
+        public FloatValue AsFloat() => GetValue(PropertyValueType.Float) as FloatValue;
+
+        public IntegerValue AsInt32() => GetValue(PropertyValueType.Integer32) as IntegerValue;
+
+        public PeriodOfTimeValue AsPeriodOfTime() => GetValue(PropertyValueType.PeriodOfTime) as PeriodOfTimeValue;
+
+        public RecurrenceRuleValue AsRecurrenceRule() => GetValue(PropertyValueType.RecurrenceRule) as RecurrenceRuleValue;
+
+        public TextValue AsText() => GetValue(PropertyValueType.Text) as TextValue;
+
+        public TimeValue AsTime() => GetValue(PropertyValueType.Time) as TimeValue;
+
+        public UriValue AsUri() => GetValue(PropertyValueType.Uri) as UriValue;
+
+        public UtcOffsetValue AsUtcOffset() => GetValue(PropertyValueType.UtcOffset) as UtcOffsetValue;
+
+        public WeekdayValue AsWeekday() => GetValue(PropertyValueType.Weekday) as WeekdayValue;
+
+        public EnumValue<EnumT> AsEnum<EnumT>()
+            where EnumT : struct, IConvertible
+        {
+            return ObjectSerializer.Deserialize<EnumValue<EnumT>>(SerializedValue);
+        }
+
+        #endregion Cast
 
         public void Deserialize(string content)
         {
