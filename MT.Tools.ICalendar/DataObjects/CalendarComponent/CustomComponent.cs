@@ -49,7 +49,7 @@ namespace MT.Tools.ICalendar.DataObjects.CalendarComponent
             if (Token?.Equals(endToken) != true) { throw new ArgumentException("Begin and end token do not match!"); }
 
             // parse content as text
-            Property = ObjectSerializer.Deserialize<CalendarProperty<TextValue>>(parts[1]);
+            Property = ObjectSerializer.Deserialize<SimpleCalendarProperty<TextValue>>(parts[1]);
         }
 
         public string Serialize()

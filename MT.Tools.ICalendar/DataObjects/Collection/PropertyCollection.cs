@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace MT.Tools.ICalendar.DataObjects
+namespace MT.Tools.ICalendar.DataObjects.Collection
 {
     public interface IPropertyCollection<ValueT>
         where ValueT : IPropertyValueImpl, new()
@@ -33,13 +33,13 @@ namespace MT.Tools.ICalendar.DataObjects
         #region Constructor
 
         public SimplePropertyCollection() { }
-        public SimplePropertyCollection(IEnumerable<CalendarProperty<ValueT>> props) { Properties = props; }
+        public SimplePropertyCollection(IEnumerable<SimpleCalendarProperty<ValueT>> props) { Properties = props; }
         
         #endregion Constructor
 
         #region Members
 
-        public IEnumerable<ICalendarProperty<ValueT>> Properties { get; } = new List<CalendarProperty<ValueT>>();
+        public IEnumerable<ICalendarProperty<ValueT>> Properties { get; } = new List<SimpleCalendarProperty<ValueT>>();
 
         #endregion Members
     }
@@ -59,27 +59,4 @@ namespace MT.Tools.ICalendar.DataObjects
 
         #endregion Members
     }
-
-    //public class PropertyDictionary<ValueT> : Dictionary<string, ValueT>
-    //    where ValueT : IPropertyValueImpl
-    //{
-    //    #region Constructor
-
-    //    public PropertyDictionary() : base() { }
-    //    public PropertyDictionary(IDictionary<string, ValueT> dict) : base(dict) { }
-    //    public PropertyDictionary(IEnumerable<KeyValuePair<string, ValueT>> pairs) : base(pairs) { }
-
-    //    #endregion Constructor
-    //}
-
-    //public class PropertyDictionary : PropertyDictionary<IPropertyValueImpl>
-    //{
-    //    #region Constructor
-
-    //    public PropertyDictionary() : base() { }
-    //    public PropertyDictionary(IDictionary<string, IPropertyValueImpl> dict) : base(dict) { }
-    //    public PropertyDictionary(IEnumerable<KeyValuePair<string, IPropertyValueImpl>> pairs) : base(pairs) { }
-
-    //    #endregion Constructor
-    //}
 }

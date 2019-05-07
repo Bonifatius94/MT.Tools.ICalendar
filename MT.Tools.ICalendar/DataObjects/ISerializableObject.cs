@@ -20,6 +20,13 @@ namespace MT.Tools.ICalendar.DataObjects
         /// <param name="content">The content to be deserialized</param>
         void Deserialize(string content);
 
+        // TODO: add the validation function below and introduce it for every implementation
+
+        ///// <summary>
+        ///// Validates the serializable object. If the data is invalid an exception will be thrown.
+        ///// </summary>
+        //void Validate();
+
         #endregion Methods
     }
 }

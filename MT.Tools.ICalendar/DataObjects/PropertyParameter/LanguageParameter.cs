@@ -1,21 +1,22 @@
-﻿using MT.Tools.ICalendar.DataObjects.PropertyParameter;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace MT.Tools.ICalendar.DataObjects.PropertyParameter
 {
-    public class DirectoryEntryReferenceParameter : IPropertyParameter
+    public class LanguageParameter : IPropertyParameter
     {
         #region Constructor
 
-        public DirectoryEntryReferenceParameter() { }
+        public LanguageParameter() { }
+
+        //public LanguageParameter() { }
 
         #endregion Constructor
 
         #region Members
 
-        public PropertyParameterType Type => PropertyParameterType.DirectoryEntryReference;
+        public PropertyParameterType Type => PropertyParameterType.Language;
 
         #endregion Members
 

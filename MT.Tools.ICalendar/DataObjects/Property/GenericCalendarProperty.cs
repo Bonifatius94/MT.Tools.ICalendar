@@ -5,7 +5,7 @@ using System.Text;
 
 namespace MT.Tools.ICalendar.DataObjects.Property
 {
-    public class GenericCalendarProperty : CalendarProperty<GenericPropertyValue>
+    public class GenericCalendarProperty : SimpleCalendarProperty<GenericPropertyValue>
     {
         #region Constructor
 

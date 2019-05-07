@@ -11,11 +11,11 @@ namespace MT.Tools.ICalendar.DataObjects.PropertyParameter
         CalendarUserType,
         Delegator,
         Delegatee,
-        DirectoryEntry,
+        DirectoryEntryReference,
         InlineEncoding,
         FormatType,
         FreeBusyTimeType,
-        LanguageForText,
+        Language,
         GroupOrListMembership,
         ParticipationStatus,
         RecurrenceIdentifierRange,
@@ -27,5 +27,14 @@ namespace MT.Tools.ICalendar.DataObjects.PropertyParameter
         ReferenceToTimeZoneObject,
         PropertyValueDataType,
         Other
+    }
+
+    public interface IPropertyParameter : ISerializableObject
+    {
+        #region Members
+
+        PropertyParameterType Type { get; }
+
+        #endregion Members
     }
 }

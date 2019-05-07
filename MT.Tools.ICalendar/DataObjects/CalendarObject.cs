@@ -1,4 +1,5 @@
 ﻿using MT.Tools.ICalendar.DataObjects.CalendarComponent;
+using MT.Tools.ICalendar.DataObjects.Collection;
 using MT.Tools.ICalendar.DataObjects.Property;
 using MT.Tools.ICalendar.DataObjects.PropertyValue;
 using MT.Tools.ICalendar.DataObjects.PropertyValue.Primitive;
@@ -15,12 +16,12 @@ namespace MT.Tools.ICalendar.DataObjects
     {
         #region Constants
 
-        public const string PROPERTY_VERSION = "VERSION";
         public const string PROPERTY_PRODID = "PRODID";
+        public const string PROPERTY_VERSION = "VERSION";
         public const string PROPERTY_CALSCALE = "CALSCALE";
         public const string PROPERTY_METHOD = "METHOD";
 
-        public static readonly string[] NonCustomProperties = new string[] { PROPERTY_VERSION, PROPERTY_PRODID, PROPERTY_CALSCALE, PROPERTY_METHOD };
+        public static readonly string[] NonCustomProperties = new string[] { PROPERTY_PRODID, PROPERTY_VERSION, PROPERTY_CALSCALE, PROPERTY_METHOD };
 
         #endregion Constants
 
@@ -28,23 +29,49 @@ namespace MT.Tools.ICalendar.DataObjects
 
         public CalendarObject() { }
 
-        public CalendarObject(string prodId, string version, IEnumerable<ICalendarComponent> components, 
-            string calScale = null, string method = null, IEnumerable<ICalendarProperty> additionalproperties = null)
+        public CalendarObject(IEnumerable<ICalendarProperty> properties, IEnumerable<ICalendarComponent> components)
         {
-            // init properties
-            var properties = new List<ICalendarProperty>()
-            {
-                new CalendarProperty<TextValue>(PROPERTY_VERSION, new TextValue(version)),
-                new CalendarProperty<TextValue>(PROPERTY_PRODID, new TextValue(prodId)),
-                new CalendarProperty<TextValue>(PROPERTY_CALSCALE, new TextValue(calScale)),
-                new CalendarProperty<TextValue>(PROPERTY_METHOD, new TextValue(method))
-            }
-            .Union(additionalproperties ?? new ICalendarProperty[0]);
+            // TODO: create a new function that does the validation stuff
 
-            // set properties / components
+            // make sure that the properties are valid
+            if (properties?.Count() < 2) { throw new ArgumentException("Insufficient properties specified! The list must at least contain PRODID and VERSION text property!"); }
+            if (!properties.Any(x => x.Key.Equals(PROPERTY_PRODID))) { throw new ArgumentException("Invalid properties! Missing PRODID text property!"); }
+            if (!properties.Any(x => x.Key.Equals(PROPERTY_VERSION))) { throw new ArgumentException("Invalid properties! Missing VERSION text property!"); }
+
+            // make sure that the components are valid
+            if (components?.Count() < 2) { throw new ArgumentException("Insufficient components specified! The list must at least contain one component!"); }
+
             Properties = properties;
             Components = components;
         }
+
+        public CalendarObject(string prodId, string version, IEnumerable<ICalendarComponent> components, 
+            string calScale = null, string method = null, IEnumerable<ICalendarProperty> additionalProperties = null)
+            : this(prepareProperties(prodId, version, calScale, method, additionalProperties), components) { }
+
+        #region Helpers
+
+        private static IEnumerable<ICalendarProperty> prepareProperties(string prodId, string version, 
+            string calScale = null, string method = null, IEnumerable<ICalendarProperty> additionalProperties = null)
+        {
+            // init properties list with required properties
+            IEnumerable<ICalendarProperty> properties = new List<ICalendarProperty>()
+            {
+                new SimpleCalendarProperty<TextValue>(PROPERTY_VERSION, new TextValue(version)),
+                new SimpleCalendarProperty<TextValue>(PROPERTY_PRODID, new TextValue(prodId)),
+            };
+
+            // append calscale and method property if specified (not null)
+            if (!string.IsNullOrEmpty(calScale)) { properties.Append(new SimpleCalendarProperty<TextValue>(PROPERTY_CALSCALE, new TextValue(calScale))); }
+            if (!string.IsNullOrEmpty(method)) { properties.Append(new SimpleCalendarProperty<TextValue>(PROPERTY_METHOD, new TextValue(method))); }
+            
+            // append the additional properties
+            properties = properties.Union(additionalProperties ?? new ICalendarProperty[0]);
+
+            return properties;
+        }
+
+        #endregion Helpers
 
         #endregion Constructor
 
@@ -61,15 +88,15 @@ namespace MT.Tools.ICalendar.DataObjects
         public IEnumerable<ICalendarComponent> Components { get; set; } = new List<ICalendarComponent>();
 
         // required, unique properties
-        public TextValue ProductId { get { return findPropertyValue(PROPERTY_PRODID) as TextValue; } }
-        public TextValue Version { get { return findPropertyValue(PROPERTY_VERSION) as TextValue; } }
+        public TextValue ProductId { get { return getPropertyValue(PROPERTY_PRODID) as TextValue; } }
+        public TextValue Version { get { return getPropertyValue(PROPERTY_VERSION) as TextValue; } }
 
         // optional, unique properties
-        public TextValue CalScale { get { return findPropertyValue(PROPERTY_CALSCALE) as TextValue; } }
-        public TextValue Method { get { return findPropertyValue(PROPERTY_METHOD) as TextValue; } }
+        public TextValue CalScale { get { return getPropertyValue(PROPERTY_CALSCALE) as TextValue; } }
+        public TextValue Method { get { return getPropertyValue(PROPERTY_METHOD) as TextValue; } }
 
         // optional, non-unique properties
-        public IEnumerable<ICalendarProperty> AdditionalProperties { get { return Properties.Where(x => !NonCustomProperties.Any(y => y.Equals(x))); } }
+        public IEnumerable<ICalendarProperty> AdditionalProperties { get { return Properties.Where(x => !NonCustomProperties.Any(y => y.Equals(x?.Key.ToUpper()))); } }
 
         #endregion Members
 
@@ -210,7 +237,7 @@ namespace MT.Tools.ICalendar.DataObjects
 
         #region Helpers
 
-        private IPropertyValueImpl findPropertyValue(string key) => Properties.Where(x => x.Key.Equals(key)).First().Value;
+        private IPropertyValueImpl getPropertyValue(string key) => Properties.Where(x => x.Key.Equals(key)).FirstOrDefault()?.Value;
 
         #endregion Helpers
 

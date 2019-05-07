@@ -29,6 +29,8 @@ namespace MT.Tools.ICalendar.DataObjects.PropertyValue.Primitive
 
         // TODO: make sure that line breaks are handled correctly
 
+        // TODO: implement regex checking for safe-chars (see pages 10 / 11)
+
         public void Deserialize(string content)
         {
             Value = content;
