@@ -5,32 +5,24 @@ using System.Text;
 
 namespace MT.Tools.ICalendar.DataObjects.PropertyParameter
 {
-    public class DirectoryEntryReferenceParameter : IPropertyParameter
+    public class DirectoryEntryReferenceParameter : UriBasedPropertyParameter
     {
         #region Constructor
 
-        public DirectoryEntryReferenceParameter() { }
+        public DirectoryEntryReferenceParameter() : base() { }
+
+        public DirectoryEntryReferenceParameter(string uri) : base(uri) { }
+
+        public DirectoryEntryReferenceParameter(Uri uri) : base(uri) { }
 
         #endregion Constructor
 
         #region Members
 
-        public PropertyParameterType Type => PropertyParameterType.DirectoryEntryReference;
+        public override PropertyParameterType Type => PropertyParameterType.DirectoryEntryReference;
+
+        public override string ParameterKeyword => "DIR";
 
         #endregion Members
-
-        #region Methods
-
-        public void Deserialize(string content)
-        {
-            throw new NotImplementedException();
-        }
-
-        public string Serialize()
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion Methods
     }
 }

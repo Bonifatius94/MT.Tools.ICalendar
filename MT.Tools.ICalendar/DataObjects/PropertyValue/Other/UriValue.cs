@@ -10,15 +10,9 @@ namespace MT.Tools.ICalendar.DataObjects.PropertyValue.Other
 
         public UriValue() { }
 
-        public UriValue(string uri)
-        {
-            Value = new Uri(uri);
-        }
+        public UriValue(string uri) { Value = new Uri(uri); }
 
-        public UriValue(Uri uri)
-        {
-            Value = uri;
-        }
+        public UriValue(Uri uri) { Value = uri; }
 
         #endregion Constructor
 

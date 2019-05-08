@@ -6,26 +6,19 @@ using System.Text;
 
 namespace MT.Tools.ICalendar.DataObjects.PropertyParameter
 {
-    public class DelegationParameter : IPropertyParameter
+    public abstract class AddressCollectionPropertyParameter : IPropertyParameter
     {
         #region Constructor
 
-        public DelegationParameter() { }
+        public AddressCollectionPropertyParameter() { }
 
-        public DelegationParameter(CalendarUserAddressValue address, PropertyParameterType type) : this(new List<CalendarUserAddressValue>() { address }, type) { }
+        public AddressCollectionPropertyParameter(CalendarUserAddressValue address) : this(new List<CalendarUserAddressValue>() { address }) { }
 
-        public DelegationParameter(IEnumerable<CalendarUserAddressValue> addresses, PropertyParameterType type)
+        public AddressCollectionPropertyParameter(IEnumerable<CalendarUserAddressValue> addresses)
         {
             // make sure that the list is not empty
-            if (addresses?.Count() == 0) { throw new ArgumentException("Invalid addresses list! List must not be null or empty!"); }
+            if (addresses?.Count() == 0 || addresses.Any(x => x == null)) { throw new ArgumentException("Invalid addresses list! List and its' elements must not be null or empty!"); }
 
-            // make sure that the type is either 'Delegator' or 'Delegatee'
-            if (type != PropertyParameterType.Delegator && type != PropertyParameterType.Delegatee)
-            {
-                throw new ArgumentException("Invalid property parameter type! 'Delegator' or 'Delegatee' expected!");
-            }
-
-            Type = type;
             Addresses = addresses;
         }
 
@@ -33,9 +26,11 @@ namespace MT.Tools.ICalendar.DataObjects.PropertyParameter
 
         #region Members
 
-        public PropertyParameterType Type { get; private set; }
+        public abstract PropertyParameterType Type { get; }
 
-        public IEnumerable<CalendarUserAddressValue> Addresses { get; set; } = new List<CalendarUserAddressValue>();
+        public abstract string ParameterKeyword { get; }
+
+        public virtual IEnumerable<CalendarUserAddressValue> Addresses { get; set; } = new List<CalendarUserAddressValue>();
 
         #endregion Members
 
@@ -47,17 +42,13 @@ namespace MT.Tools.ICalendar.DataObjects.PropertyParameter
             content = content.Trim();
 
             // make sure that the parameter starts with DELEGATED-FROM or DELEGATED-TO
-            if (!content.StartsWith("DELEGATED-FROM=") && !content.StartsWith("DELEGATED-TO="))
+            if (!content.ToUpper().StartsWith(ParameterKeyword.ToUpper()))
             {
                 throw new ArgumentException("Invalid delegator content detected! Property parameter needs to start with DELEGATED-FROM or DELEGATED-TO keyword!");
             }
 
-            // parse delegation type
-            string typeAsString = content.Substring(0, content.IndexOf('='));
-            Type = "DELEGATED-FROM=".Equals(typeAsString) ? PropertyParameterType.Delegator : PropertyParameterType.Delegatee;
-
             // parse addresses
-            string addressesContent = content.Substring(typeAsString.Length + 1);
+            string addressesContent = content.Substring(content.IndexOf('=') + 1);
             var addressParts = addressesContent.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim());
             var addresses = new List<CalendarUserAddressValue>();
 
@@ -82,10 +73,7 @@ namespace MT.Tools.ICalendar.DataObjects.PropertyParameter
             // make sure that the addresses list contains at least one element
             if (Addresses?.Count() == 0) { throw new ArgumentException("Invalid addresses list! List must not be null or empty!"); }
 
-            string delegationType = Type == PropertyParameterType.Delegator ? "DELEGATED-FROM" : "DELEGATED-TO";
-            string serializedAddresses = Addresses.Select(x => x.Serialize()).Aggregate((x, y) => x + "," + y);
-
-            return $"{ delegationType }={ serializedAddresses }";
+            return $"{ ParameterKeyword }={ Addresses.Select(x => x.Serialize()).Aggregate((x, y) => x + "," + y) }";
         }
 
         #endregion Methods

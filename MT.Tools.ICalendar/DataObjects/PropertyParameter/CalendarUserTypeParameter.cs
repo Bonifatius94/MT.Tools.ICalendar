@@ -26,14 +26,14 @@ namespace MT.Tools.ICalendar.DataObjects.PropertyParameter
 
         public CalendarUserTypeParameter(CalendarUserType type, string customType = null)
         {
-            // make sure that custom type is specified when customType is not null
-            if (customType != null && type != CalendarUserType.Custom)
+            // make sure that the type is not custom
+            if (type == CalendarUserType.Custom)
             {
-                throw new ArgumentException("Invalid custom user type! Type needs to be custom as well when custom type name is explicitly set!");
+                
             }
 
-            UserType = new EnumValue<CalendarUserType>(type);
-            CustomType = new TextValue(customType);
+            UserType = type;
+            CustomUserType = customType;
         }
 
         #endregion Constructor
@@ -42,8 +42,8 @@ namespace MT.Tools.ICalendar.DataObjects.PropertyParameter
 
         public PropertyParameterType Type => PropertyParameterType.CalendarUserType;
 
-        public EnumValue<CalendarUserType> UserType { get; set; } = new EnumValue<CalendarUserType>(CalendarUserType.Individual);
-        public TextValue CustomType { get; set; } = null;
+        public CalendarUserType UserType { get; set; } = CalendarUserType.Individual;
+        public string CustomUserType { get; set; } = null;
 
         #endregion Members
 
@@ -60,24 +60,20 @@ namespace MT.Tools.ICalendar.DataObjects.PropertyParameter
             // get the user type as string
             string typeAsString = content.Substring(content.IndexOf('=') + 1).Trim();
 
-            // try to deserialize the content as enum
+            // parse user type and potential custom types
             EnumValue<CalendarUserType> type;
-            bool isStandardType = ObjectSerializer.TryDeserialize(typeAsString, out type);
-
-            // check if a custom value is specified
-            if (!isStandardType || type.Value == CalendarUserType.Custom)
-            {
-                type = new EnumValue<CalendarUserType>(CalendarUserType.Custom);
-                string typeString = (type.Value == CalendarUserType.Custom) ? "CUSTOM" : typeAsString;
-                CustomType = new TextValue(typeString);
-            }
-
-            UserType = type;
+            UserType = ObjectSerializer.TryDeserialize(typeAsString, out type) ? type.Value : CalendarUserType.Custom;
+            CustomUserType = (type.Value == CalendarUserType.Custom) ? typeAsString : null;
         }
 
         public string Serialize()
         {
-            return $"CUTYPE={ ((UserType.Value == CalendarUserType.Custom) ? CustomType.Serialize() : UserType.Serialize()) }";
+            if (UserType == CalendarUserType.Custom && string.IsNullOrWhiteSpace(CustomUserType))
+            {
+                throw new ArgumentException("Invalid custom user type! Type needs to be custom as well when custom type name is explicitly set!");
+            }
+
+            return $"CUTYPE={ (UserType == CalendarUserType.Custom ? CustomUserType : UserType.ToString().ToUpper()) }";
         }
 
         #endregion Methods

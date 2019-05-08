@@ -21,7 +21,7 @@ namespace MT.Tools.ICalendar.DataObjects.PropertyParameter
         RecurrenceIdentifierRange,
         AlarmTriggerRelationship,
         RelationshipType,
-        RelationshipRole,
+        ParticipationRole,
         RsvpExpectation,
         SentBy,
         ReferenceToTimeZoneObject,

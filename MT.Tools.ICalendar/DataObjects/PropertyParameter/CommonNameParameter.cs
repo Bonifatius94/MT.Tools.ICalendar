@@ -12,10 +12,7 @@ namespace MT.Tools.ICalendar.DataObjects.PropertyParameter
 
         public CommonNameParameter() { }
 
-        public CommonNameParameter(string value)
-        {
-
-        }
+        public CommonNameParameter(string value) { Text = new TextValue(value); }
 
         #endregion Constructor
 
