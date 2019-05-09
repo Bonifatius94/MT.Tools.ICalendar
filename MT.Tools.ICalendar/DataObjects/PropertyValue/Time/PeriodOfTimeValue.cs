@@ -11,7 +11,7 @@ namespace MT.Tools.ICalendar.DataObjects.PropertyValue.Time
         FixEnd
     }
 
-    public class PeriodOfTimeValue : IPropertyValueImpl
+    public class PeriodOfTimeValue : IPropertyValue
     {
         #region Constructor
 

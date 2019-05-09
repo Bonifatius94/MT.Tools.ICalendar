@@ -9,7 +9,7 @@ using System.Text;
 namespace MT.Tools.ICalendar.DataObjects.Collection
 {
     public interface IPropertyCollection<ValueT>
-        where ValueT : IPropertyValueImpl, new()
+        where ValueT : IPropertyValue, new()
     {
         #region Members
 
@@ -28,7 +28,7 @@ namespace MT.Tools.ICalendar.DataObjects.Collection
     }
 
     public class SimplePropertyCollection<ValueT> : IPropertyCollection<ValueT>
-        where ValueT : IPropertyValueImpl, new()
+        where ValueT : IPropertyValue, new()
     {
         #region Constructor
 

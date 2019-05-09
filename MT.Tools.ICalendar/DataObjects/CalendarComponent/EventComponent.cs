@@ -108,7 +108,7 @@ namespace MT.Tools.ICalendar.DataObjects.CalendarComponent
 
         #region Helpers
 
-        private IPropertyValueImpl getPropertyValue(string key) => Properties.Where(x => x.Key.Equals(key)).First().Value;
+        private IPropertyValue getPropertyValue(string key) => Properties.Where(x => x.Key.Equals(key)).First().Value;
 
         #endregion Helpers
 

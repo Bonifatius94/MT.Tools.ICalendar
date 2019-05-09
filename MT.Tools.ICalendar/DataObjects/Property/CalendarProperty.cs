@@ -10,7 +10,7 @@ namespace MT.Tools.ICalendar.DataObjects.Property
         #region Members
 
         string Key { get; set; }
-        IPropertyValueImpl Value { get; set; }
+        IPropertyValue Value { get; set; }
 
         PropertyValueType ValueType { get; }
 
@@ -18,7 +18,7 @@ namespace MT.Tools.ICalendar.DataObjects.Property
     }
 
     public interface ICalendarProperty<ValueT> : ICalendarProperty
-        where ValueT : IPropertyValueImpl
+        where ValueT : IPropertyValue
     {
         #region Members
 
@@ -28,7 +28,7 @@ namespace MT.Tools.ICalendar.DataObjects.Property
     }
 
     public class SimpleCalendarProperty<ValueT> : ICalendarProperty<ValueT>
-        where ValueT : IPropertyValueImpl, new()
+        where ValueT : IPropertyValue, new()
     {
         #region Constructor
 
@@ -47,17 +47,17 @@ namespace MT.Tools.ICalendar.DataObjects.Property
         public string Key { get; set; }
         public ValueT ExplicitValue { get; set; }
 
-        public IPropertyValueImpl Value { get => ExplicitValue as IPropertyValueImpl; set => ExplicitValue = (ValueT)value; }
+        public IPropertyValue Value { get => ExplicitValue; set => ExplicitValue = (ValueT)value; }
 
-        public PropertyValueType ValueType => Value?.Type ?? PropertyValueType.Unknown;
+        public PropertyValueType ValueType => Value?.Type ?? PropertyValueType.Custom;
 
         #endregion Members
 
         #region Methods
 
-        public KeyValuePair<string, IPropertyValueImpl> AsPair()
+        public KeyValuePair<string, IPropertyValue> AsPair()
         {
-            return new KeyValuePair<string, IPropertyValueImpl>(Key, Value);
+            return new KeyValuePair<string, IPropertyValue>(Key, Value);
         }
 
         public void Deserialize(string content)

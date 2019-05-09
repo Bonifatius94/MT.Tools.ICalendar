@@ -4,7 +4,7 @@ using System.Text;
 
 namespace MT.Tools.ICalendar.DataObjects.PropertyValue.Primitive
 {
-    public class IntegerValue : IPropertyValueImpl
+    public class IntegerValue : IPropertyValue
     {
         #region Constructor
 

@@ -8,13 +8,13 @@ using System.Text;
 
 namespace MT.Tools.ICalendar.DataObjects.PropertyValue
 {
-    public class GenericPropertyValue : IPropertyValueImpl
+    public class GenericPropertyValue : IPropertyValue
     {
         #region Constructor
 
         public GenericPropertyValue() { }
 
-        public GenericPropertyValue(string serializedValue, PropertyValueType type = PropertyValueType.Unknown)
+        public GenericPropertyValue(string serializedValue, PropertyValueType type = PropertyValueType.Custom)
         {
             SerializedValue = serializedValue;
             Type = type;
@@ -27,7 +27,7 @@ namespace MT.Tools.ICalendar.DataObjects.PropertyValue
         /// <summary>
         /// The type of the property value.
         /// </summary>
-        public PropertyValueType Type { get; } = PropertyValueType.Unknown;
+        public PropertyValueType Type { get; } = PropertyValueType.Custom;
 
         /// <summary>
         /// The original serialized content of the property value.
@@ -43,7 +43,7 @@ namespace MT.Tools.ICalendar.DataObjects.PropertyValue
         /// </summary>
         /// <param name="type">The type to be deserialized (if null the type from the Type member is used)</param>
         /// <returns>a deserialized property value</returns>
-        public IPropertyValueImpl GetValue(PropertyValueType? type = null)
+        public IPropertyValue GetValue(PropertyValueType? type = null)
         {
             switch (type ?? Type)
             {

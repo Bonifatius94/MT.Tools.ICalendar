@@ -4,7 +4,7 @@ using System.Text;
 
 namespace MT.Tools.ICalendar.DataObjects.PropertyValue.Time
 {
-    public class UtcOffsetValue : IPropertyValueImpl
+    public class UtcOffsetValue : IPropertyValue
     {
         #region Constructor
 

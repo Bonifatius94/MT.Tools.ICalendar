@@ -24,7 +24,7 @@ namespace MT.Tools.ICalendar.DataObjects.PropertyParameter
         ParticipationRole,
         RsvpExpectation,
         SentBy,
-        ReferenceToTimeZoneObject,
+        TimeZoneIdentifier,
         PropertyValueDataType,
         Other
     }

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace MT.Tools.ICalendar.DataObjects.PropertyValue.Primitive
 {
-    public class EnumValue<EnumT> : IPropertyValueImpl
+    public class EnumValue<EnumT> : IPropertyValue
         where EnumT : struct, IConvertible
     {
         #region Constructor

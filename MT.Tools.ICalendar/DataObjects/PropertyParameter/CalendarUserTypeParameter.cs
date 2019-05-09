@@ -24,17 +24,9 @@ namespace MT.Tools.ICalendar.DataObjects.PropertyParameter
 
         public CalendarUserTypeParameter() { }
 
-        public CalendarUserTypeParameter(CalendarUserType type, string customType = null)
-        {
-            // make sure that the type is not custom
-            if (type == CalendarUserType.Custom)
-            {
-                
-            }
+        public CalendarUserTypeParameter(CalendarUserType type) { UserType = type; }
 
-            UserType = type;
-            CustomUserType = customType;
-        }
+        public CalendarUserTypeParameter(string customType) { UserType = CalendarUserType.Custom; CustomUserType = customType; }
 
         #endregion Constructor
 

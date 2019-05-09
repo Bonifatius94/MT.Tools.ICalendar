@@ -4,7 +4,7 @@ using System.Text;
 
 namespace MT.Tools.ICalendar.DataObjects.PropertyValue.Time
 {
-    public class WeekdayValue : IPropertyValueImpl
+    public class WeekdayValue : IPropertyValue
     {
         #region Constructor
 

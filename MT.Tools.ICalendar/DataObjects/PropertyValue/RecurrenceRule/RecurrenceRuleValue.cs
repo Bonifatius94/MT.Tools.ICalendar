@@ -20,7 +20,7 @@ namespace MT.Tools.ICalendar.DataObjects.PropertyValue.RecurrenceRule
         Yearly = 9
     }
 
-    public class RecurrenceRuleValue : IPropertyValueImpl
+    public class RecurrenceRuleValue : IPropertyValue
     {
         #region Constructor
 

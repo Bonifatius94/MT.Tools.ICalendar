@@ -24,10 +24,10 @@ namespace MT.Tools.ICalendar.DataObjects.PropertyValue
         Weekday,
 
         // additional types
-        Unknown
+        Custom
     }
 
-    public interface IPropertyValueImpl : ISerializableObject
+    public interface IPropertyValue : ISerializableObject
     {
         #region Members
 

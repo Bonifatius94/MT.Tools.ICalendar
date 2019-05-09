@@ -13,7 +13,7 @@ namespace MT.Tools.ICalendar.DataObjects.Property
 
         public GenericCalendarProperty(string key, GenericPropertyValue value) : base(key, value) { }
 
-        public GenericCalendarProperty(string key, string serializedValue, PropertyValueType type = PropertyValueType.Unknown)
+        public GenericCalendarProperty(string key, string serializedValue, PropertyValueType type = PropertyValueType.Custom)
             : this(key, new GenericPropertyValue(serializedValue, type)) { }
 
         #endregion Constructor
@@ -25,12 +25,12 @@ namespace MT.Tools.ICalendar.DataObjects.Property
             return ExplicitValue.GetValue(type);
         }
 
-        public ValueT Cast<ValueT>() where ValueT : IPropertyValueImpl, new()
+        public ValueT Cast<ValueT>() where ValueT : IPropertyValue, new()
         {
             return ObjectSerializer.Deserialize<ValueT>(ExplicitValue.SerializedValue);
         }
 
-        public bool TryCast<ValueT>(out ValueT value) where ValueT : IPropertyValueImpl, new()
+        public bool TryCast<ValueT>(out ValueT value) where ValueT : IPropertyValue, new()
         {
             // init ret and value for cast failure
             bool ret = false;
