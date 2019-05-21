@@ -5,6 +5,7 @@ using System.Text;
 using MT.Tools.ICalendar.DataObjects.Collection;
 using MT.Tools.ICalendar.DataObjects.Property;
 using MT.Tools.ICalendar.DataObjects.PropertyValue;
+using MT.Tools.ICalendar.DataObjects.PropertyValue.Other;
 using MT.Tools.ICalendar.DataObjects.PropertyValue.Primitive;
 using MT.Tools.ICalendar.DataObjects.PropertyValue.Time;
 
@@ -16,8 +17,10 @@ namespace MT.Tools.ICalendar.DataObjects.CalendarComponent
 
         public const string PROPERTY_DTSTAMP = "DTSTAMP";
         public const string PROPERTY_UID = "UID";
+        public const string PROPERTY_DTSTART = "DTSTART";
 
         public const string PROPERTY_ATTACH = "ATTACH";
+        public const string PROPERTY_ATTENDEE = "ATTENDEE";
 
         #endregion Constants
 
@@ -43,13 +46,14 @@ namespace MT.Tools.ICalendar.DataObjects.CalendarComponent
         // required unique properties
         public DateTimeValue DtStamp => getPropertyValue(PROPERTY_DTSTAMP) as DateTimeValue;
         public TextValue Uid => getPropertyValue(PROPERTY_UID) as TextValue;
+        public DateTimeValue DtStart => getPropertyValue(PROPERTY_DTSTART) as DateTimeValue;
 
         // optional unique properties
 
 
-
         // optional non-unique properties
-        public TextValue Attach => getPropertyValue(PROPERTY_ATTACH) as TextValue;
+        public IEnumerable<TextValue> Attachments => Properties.Where(x => x.Key.Equals(PROPERTY_ATTACH)).Cast<TextValue>();
+        public IEnumerable<CalendarUserAddressValue> Attendees => Properties.Where(x => x.Key.Equals(PROPERTY_ATTENDEE)).Cast<CalendarUserAddressValue>();
 
 
         // required unique properties

@@ -66,8 +66,7 @@ namespace MT.Tools.ICalendar
             string unfoldedContent = FoldHelper.UnfoldContent(foldedContent);
 
             // parse content and retrieve the object tree
-            var calendar = new CalendarFile();
-            calendar.TryDeserialize(unfoldedContent);
+            var calendar = ObjectSerializer.Deserialize<CalendarFile>(unfoldedContent);
 
             return calendar;
         }
