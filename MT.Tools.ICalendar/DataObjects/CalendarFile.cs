@@ -44,7 +44,7 @@ namespace MT.Tools.ICalendar.DataObjects
             do
             {
                 // find iCalendar object markups
-                var objectLines = contentLines/*.SkipWhile(x => !x.StartsWith("BEGIN:VCALENDAR"))*/.TakeWhile(x => !x.StartsWith("END:VCALENDAR"));
+                var objectLines = contentLines.TakeWhile(x => !x.StartsWith("END:VCALENDAR")).Append("END:VCALENDAR");
                 string objectContent = objectLines.Aggregate((x, y) => $"{ x }\r\n{ y }");
 
                 // parse the iCalendar object from the extracted content

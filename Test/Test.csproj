@@ -2,11 +2,15 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Update="TestFile.txt">
+    <ProjectReference Include="..\MT.Tools.Icalendar\MT.Tools.ICalendar.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="testdata\Probenplan Orchester St. Pankratius Sommer 2019.ics">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

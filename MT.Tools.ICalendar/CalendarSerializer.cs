@@ -50,17 +50,13 @@ namespace MT.Tools.ICalendar
 
         public CalendarFile Deserialize(Stream inStream)
         {
-            byte[] utf8Bytes;
+            string foldedContent;
 
-            using (var reader = new BinaryReader(inStream))
+            // read text from stream (converts UTF-8 to Unicode)
+            using (var reader = new StreamReader(inStream, Encoding.UTF8))
             {
-                // get all bytes from the stream at once
-                utf8Bytes = reader.ReadBytes((int)inStream.Length);
+                foldedContent = reader.ReadToEnd();
             }
-
-            // convert UTF-8 bytes to unicode string
-            var unicodeBytes = Encoding.Convert(Encoding.UTF8, Encoding.Unicode, utf8Bytes);
-            var foldedContent = Encoding.Default.GetString(unicodeBytes);
 
             // unfold content
             string unfoldedContent = FoldHelper.UnfoldContent(foldedContent);

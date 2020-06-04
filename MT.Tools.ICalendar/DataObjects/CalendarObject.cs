@@ -155,7 +155,8 @@ namespace MT.Tools.ICalendar.DataObjects
                 string componentContent = componentLines.Aggregate((x, y) => $"{ x }\r\n{ y }");
 
                 // parse the component from the extracted lines
-                Components.Append(deserializeComponent(componentContent));
+                var component = deserializeComponent(componentContent);
+                Components.Append(component);
 
                 // remove already parsed lines
                 contentLines = contentLines.GetRange(componentLines.Count, contentLines.Count - componentLines.Count);
