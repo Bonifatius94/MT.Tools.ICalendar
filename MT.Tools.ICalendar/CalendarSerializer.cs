@@ -121,7 +121,9 @@ namespace MT.Tools.ICalendar
         public static string FoldContent(string unfoldedContent)
         {
             var builder = new StringBuilder();
-            var lines = unfoldedContent.Split("\r\n", StringSplitOptions.RemoveEmptyEntries);
+            var lines = unfoldedContent.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            // TODO: avoid splitting string, just search for IndexOf() occurances using an offset
+            // TODO: make sure that the \r\n is also linux-compatible
 
             foreach (string line in lines)
             {
@@ -145,6 +147,7 @@ namespace MT.Tools.ICalendar
 
         public static string UnfoldContent(string foldedContent)
         {
+            // TODO: make sure that the \r\n is also linux-compatible
             return foldedContent.Replace("\r\n ", "");
         }
 
