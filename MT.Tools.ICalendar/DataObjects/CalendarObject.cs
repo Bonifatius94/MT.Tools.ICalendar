@@ -151,7 +151,7 @@ namespace MT.Tools.ICalendar.DataObjects
             do
             {
                 // extract the lines of the next iCalendar component
-                var componentLines = contentLines.GetRange(0, indexOfClosingTag(contentLines) + 1);
+                var componentLines = contentLines.GetRange(0, indexOfClosingTag(contentLines));
                 string componentContent = componentLines.Aggregate((x, y) => $"{ x }\r\n{ y }");
 
                 // parse the component from the extracted lines

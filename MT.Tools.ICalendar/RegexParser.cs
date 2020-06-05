@@ -27,8 +27,6 @@
 //        // combined regex definitions
 //        public const string REGEX_VALUE_CHAR = "(\\x21-\\x)";
 
-//        // TODO: add missing regex definitions
-
 //        // regex datatypes
 //        public const string REGEX_URI = "";
 //        public const string REGEX_INTEGER = REGEX_OPTIONAL_PLUS_MINUS + REGEX_DIGIT + "+";
