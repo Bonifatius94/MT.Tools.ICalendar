@@ -1,27 +1,22 @@
 ﻿using MT.Tools.ICalendar.DataObjects.CalendarComponent;
-using MT.Tools.ICalendar.DataObjects.Collection;
-using MT.Tools.ICalendar.DataObjects.Property;
-using MT.Tools.ICalendar.DataObjects.PropertyValue;
-using MT.Tools.ICalendar.DataObjects.PropertyValue.Primitive;
-using MT.Tools.ICalendar.Extensions;
+using MT.Tools.ICalendar.DataObjects.Factory;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace MT.Tools.ICalendar.DataObjects
 {
-    public class CalendarObject : ISerializableObject, IPropertyCollection
+    public class CalendarObject : ISerializableObject
     {
         #region Constants
 
-        public const string PROPERTY_PRODID = "PRODID";
-        public const string PROPERTY_VERSION = "VERSION";
-        public const string PROPERTY_CALSCALE = "CALSCALE";
-        public const string PROPERTY_METHOD = "METHOD";
-
-        public static readonly string[] NonCustomProperties = new string[] { PROPERTY_PRODID, PROPERTY_VERSION, PROPERTY_CALSCALE, PROPERTY_METHOD };
+        public static readonly string[] NonCustomProperties = new string[]
+        {
+            CalendarProperty.PROPERTY_PRODID,
+            CalendarProperty.PROPERTY_VERSION,
+            CalendarProperty.PROPERTY_CALSCALE,
+            CalendarProperty.PROPERTY_METHOD
+        };
 
         #endregion Constants
 
@@ -29,14 +24,14 @@ namespace MT.Tools.ICalendar.DataObjects
 
         public CalendarObject() { }
 
-        public CalendarObject(IEnumerable<ICalendarProperty> properties, IEnumerable<ICalendarComponent> components)
+        public CalendarObject(IEnumerable<CalendarProperty> properties, IEnumerable<ICalendarComponent> components)
         {
             // TODO: create a new function that does the validation stuff
 
             // make sure that the properties are valid
             if (properties?.Count() < 2) { throw new ArgumentException("Insufficient properties specified! The list must at least contain PRODID and VERSION text property!"); }
-            if (!properties.Any(x => x.Key.Equals(PROPERTY_PRODID))) { throw new ArgumentException("Invalid properties! Missing PRODID text property!"); }
-            if (!properties.Any(x => x.Key.Equals(PROPERTY_VERSION))) { throw new ArgumentException("Invalid properties! Missing VERSION text property!"); }
+            if (!properties.Any(x => x.Key.Equals(CalendarProperty.PROPERTY_PRODID))) { throw new ArgumentException("Invalid properties! Missing PRODID text property!"); }
+            if (!properties.Any(x => x.Key.Equals(CalendarProperty.PROPERTY_VERSION))) { throw new ArgumentException("Invalid properties! Missing VERSION text property!"); }
 
             // make sure that the components are valid
             if (components?.Count() < 2) { throw new ArgumentException("Insufficient components specified! The list must at least contain one component!"); }
@@ -46,27 +41,27 @@ namespace MT.Tools.ICalendar.DataObjects
         }
 
         public CalendarObject(string prodId, string version, IEnumerable<ICalendarComponent> components, 
-            string calScale = null, string method = null, IEnumerable<ICalendarProperty> additionalProperties = null)
+            string calScale = null, string method = null, IEnumerable<CalendarProperty> additionalProperties = null)
             : this(prepareProperties(prodId, version, calScale, method, additionalProperties), components) { }
 
         #region Helpers
 
-        private static IEnumerable<ICalendarProperty> prepareProperties(string prodId, string version, 
-            string calScale = null, string method = null, IEnumerable<ICalendarProperty> additionalProperties = null)
+        private static IEnumerable<CalendarProperty> prepareProperties(string prodId, string version, 
+            string calScale = null, string method = null, IEnumerable<CalendarProperty> additionalProperties = null)
         {
             // init properties list with required properties
-            IEnumerable<ICalendarProperty> properties = new List<ICalendarProperty>()
+            IEnumerable<CalendarProperty> properties = new List<CalendarProperty>()
             {
-                new SimpleCalendarProperty<TextValue>(PROPERTY_VERSION, new TextValue(version)),
-                new SimpleCalendarProperty<TextValue>(PROPERTY_PRODID, new TextValue(prodId)),
+                new CalendarProperty(CalendarProperty.PROPERTY_VERSION, version),
+                new CalendarProperty(CalendarProperty.PROPERTY_PRODID, prodId),
             };
 
             // append calscale and method property if specified (not null)
-            if (!string.IsNullOrEmpty(calScale)) { properties.Append(new SimpleCalendarProperty<TextValue>(PROPERTY_CALSCALE, new TextValue(calScale))); }
-            if (!string.IsNullOrEmpty(method)) { properties.Append(new SimpleCalendarProperty<TextValue>(PROPERTY_METHOD, new TextValue(method))); }
+            if (!string.IsNullOrEmpty(calScale)) { properties.Append(new CalendarProperty(CalendarProperty.PROPERTY_CALSCALE, calScale)); }
+            if (!string.IsNullOrEmpty(method)) { properties.Append(new CalendarProperty(CalendarProperty.PROPERTY_METHOD, method)); }
             
             // append the additional properties
-            properties = properties.Union(additionalProperties ?? new ICalendarProperty[0]);
+            properties = properties.Union(additionalProperties ?? new CalendarProperty[0]);
 
             return properties;
         }
@@ -80,7 +75,7 @@ namespace MT.Tools.ICalendar.DataObjects
         /// <summary>
         /// The properties of the iCalendar object.
         /// </summary>
-        public IEnumerable<ICalendarProperty> Properties { get; } = new List<GenericCalendarProperty>();
+        public IEnumerable<CalendarProperty> Properties { get; } = new List<CalendarProperty>();
 
         /// <summary>
         /// The components of the iCalendar object.
@@ -88,15 +83,15 @@ namespace MT.Tools.ICalendar.DataObjects
         public IEnumerable<ICalendarComponent> Components { get; set; } = new List<ICalendarComponent>();
 
         // required, unique properties
-        public TextValue ProductId { get { return getPropertyValue(PROPERTY_PRODID) as TextValue; } }
-        public TextValue Version { get { return getPropertyValue(PROPERTY_VERSION) as TextValue; } }
+        public string ProductId { get { return getPropertyValue(CalendarProperty.PROPERTY_PRODID); } }
+        public string Version { get { return getPropertyValue(CalendarProperty.PROPERTY_VERSION); } }
 
         // optional, unique properties
-        public TextValue CalScale { get { return getPropertyValue(PROPERTY_CALSCALE) as TextValue; } }
-        public TextValue Method { get { return getPropertyValue(PROPERTY_METHOD) as TextValue; } }
+        public string CalScale { get { return getPropertyValue(CalendarProperty.PROPERTY_CALSCALE); } }
+        public string Method { get { return getPropertyValue(CalendarProperty.PROPERTY_METHOD); } }
 
         // optional, non-unique properties
-        public IEnumerable<ICalendarProperty> AdditionalProperties { get { return Properties.Where(x => !NonCustomProperties.Any(y => y.Equals(x?.Key.ToUpper()))); } }
+        public IEnumerable<CalendarProperty> AdditionalProperties { get { return Properties.Where(x => !NonCustomProperties.Any(y => y.Equals(x?.Key.ToUpper()))); } }
 
         #endregion Members
 
@@ -140,7 +135,7 @@ namespace MT.Tools.ICalendar.DataObjects
             // deserialize each line as a property
             foreach (var line in contentLines)
             {
-                var property = ObjectSerializer.Deserialize<GenericCalendarProperty>(line);
+                var property = ObjectSerializer.Deserialize<CalendarProperty>(line);
                 Properties.Append(property);
             }
         }
@@ -159,7 +154,7 @@ namespace MT.Tools.ICalendar.DataObjects
                 // TODO: make sure that the indexing is correct and does not run into out-of-bounds error
 
                 // parse the component from the extracted lines
-                var component = deserializeComponent(componentContent);
+                var component = CalendarFactory.DeserializeCalendarComponent(componentContent);
                 Components.Append(component);
 
                 // remove already parsed lines
@@ -191,50 +186,6 @@ namespace MT.Tools.ICalendar.DataObjects
             return Math.Min(content.IndexOf('\r', offset), content.IndexOf('\n', offset));
         }
 
-        private ICalendarComponent deserializeComponent(string content)
-        {
-            ICalendarComponent component;
-
-            // make sure that heading whitespaces get removed
-            content = content.TrimStart();
-
-            // find out the component type and parse the component accordingly
-            if (content.ToUpper().StartsWith("BEGIN:VEVENT"))
-            {
-                component = ObjectSerializer.Deserialize<EventComponent>(content);
-            }
-            else if (content.ToUpper().StartsWith("BEGIN:VTODO"))
-            {
-                component = ObjectSerializer.Deserialize<TodoComponent>(content);
-            }
-            else if (content.ToUpper().StartsWith("BEGIN:VJOURNAL"))
-            {
-                component = ObjectSerializer.Deserialize<JournalComponent>(content);
-            }
-            else if (content.ToUpper().StartsWith("BEGIN:VFREEBUSY"))
-            {
-                component = ObjectSerializer.Deserialize<FreeBusyComponent>(content);
-            }
-            else if (content.ToUpper().StartsWith("BEGIN:VTIMEZONE"))
-            {
-                component = ObjectSerializer.Deserialize<TimezoneComponent>(content);
-            }
-            else if (content.ToUpper().StartsWith("BEGIN:VALARM"))
-            {
-                component = ObjectSerializer.Deserialize<AlarmComponent>(content);
-            }
-            else if (content.ToUpper().StartsWith("BEGIN:"))
-            {
-                component = ObjectSerializer.Deserialize<CustomComponent>(content);
-            }
-            else
-            {
-                throw new ArgumentException("Invalid iCalendar component detected! Missing BEGIN markup!");
-            }
-
-            return component;
-        }
-
         public string Serialize()
         {
             // serialize properties and component
@@ -248,7 +199,7 @@ namespace MT.Tools.ICalendar.DataObjects
 
         #region Helpers
 
-        private IPropertyValue getPropertyValue(string key) => Properties.Where(x => x.Key.Equals(key)).FirstOrDefault()?.Value;
+        private string getPropertyValue(string key) => Properties.Where(x => x.Key.Equals(key)).FirstOrDefault()?.Value;
 
         #endregion Helpers
 

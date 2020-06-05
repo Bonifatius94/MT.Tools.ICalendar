@@ -1,4 +1,4 @@
-﻿using MT.Tools.ICalendar.DataObjects.Property;
+﻿using MT.Tools.ICalendar.DataObjects.PropertyBase;
 using MT.Tools.ICalendar.DataObjects.PropertyValue.Primitive;
 using System;
 using System.Collections.Generic;

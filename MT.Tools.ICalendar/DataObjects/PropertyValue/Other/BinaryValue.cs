@@ -10,10 +10,9 @@ namespace MT.Tools.ICalendar.DataObjects.PropertyValue.Other
 
         public BinaryValue() { }
 
-        public BinaryValue(byte[] bytes)
-        {
-            Bytes = bytes;
-        }
+        public BinaryValue(byte[] bytes) { Bytes = bytes; }
+
+        //public BinaryValue(string base64) { Deserialize(base64); }
 
         #endregion Constructor
 

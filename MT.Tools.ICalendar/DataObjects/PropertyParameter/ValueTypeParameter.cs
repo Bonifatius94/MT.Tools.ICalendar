@@ -73,7 +73,7 @@ namespace MT.Tools.ICalendar.DataObjects.PropertyParameter
                 case PropertyValueType.Uri:                 return "URI";
                 case PropertyValueType.UtcOffset:           return "UTC-OFFSET";
                 case PropertyValueType.Custom:              return customStatus;
-                default: throw new NotImplementedException("Unknown participation status detected!");
+                default: throw new NotImplementedException("Unknown property value type detected!");
             }
         }
 
