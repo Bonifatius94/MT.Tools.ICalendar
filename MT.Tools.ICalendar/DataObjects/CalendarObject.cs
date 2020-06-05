@@ -107,36 +107,37 @@ namespace MT.Tools.ICalendar.DataObjects
             // remove heading and trailing white spaces
             content = content.Trim();
 
-            // retrieve content lines
-            var contentLines = content.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()).ToList();
+            // extract the first and the last line
+            string firstLine = content.Substring(0, Math.Min(content.IndexOf('\r'), content.IndexOf('\n'))).Trim();
+            string lastLine = content.Substring(content.LastIndexOf('\n') + 1).Trim();
 
             // make sure that the first and last line are correct
-            bool isFirstAndLastLineCorrect = contentLines.First().ToUpper().Equals("BEGIN:VCALENDAR") && contentLines.Last().ToUpper().Equals("END:VCALENDAR");
+            bool isFirstAndLastLineCorrect = firstLine.ToUpper().Equals("BEGIN:VCALENDAR") && lastLine.ToUpper().Equals("END:VCALENDAR");
             if (!isFirstAndLastLineCorrect) { throw new ArgumentException("Invalid iCalendar markups at start / end of the calendar object!"); }
 
-            // remove the iCalendar object markups (first and last line)
-            contentLines = contentLines.GetRange(1, contentLines.Count - 2);
+            // determine the start of the first iCalendar component (= end of iCalendar object properties)
+            int firstCompsStart = content.IndexOf("BEGIN:", firstLine.Length);
 
             // make sure that the iCalendar object has at least one component
-            bool hasComponent = contentLines.Any(x => x.ToUpper().StartsWith("BEGIN:"));
-            if (!hasComponent) { throw new ArgumentException("Missing components! The iCalendar object has no components!"); }
-
-            // determine the start of the first iCalendar component (= end of iCalendar object properties)
-            int firstCompsStart = contentLines.IndexOf(contentLines.Where(x => x.ToUpper().StartsWith("BEGIN:")).First());
+            if (firstCompsStart < 0) { throw new ArgumentException("Missing components! The iCalendar object has no components!"); }
 
             // TODO: think about multi-threading optimizations (e.g. parsing properties and components at the same time)
 
             // parse the properties from the content lines
-            var propertyLines = contentLines.GetRange(0, firstCompsStart);
-            deserializeProperties(propertyLines);
+            string propertiesContent = content.Substring(firstLine.Length, firstCompsStart - firstLine.Length); // TODO: make sure that this index is correct
+            deserializeProperties(propertiesContent);
 
             // parse iCalendar components
-            var componentLines = contentLines.GetRange(firstCompsStart, contentLines.Count - propertyLines.Count);
+            var componentLines = content.Substring(firstCompsStart, content.Length - firstCompsStart - lastLine.Length).Trim();
             deserializeComponents(componentLines);
         }
 
-        private void deserializeProperties(List<string> contentLines)
+        private void deserializeProperties(string content)
         {
+            // split content at line break
+            var contentLines = content.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+
+            // deserialize each line as a property
             foreach (var line in contentLines)
             {
                 var property = ObjectSerializer.Deserialize<GenericCalendarProperty>(line);
@@ -144,41 +145,50 @@ namespace MT.Tools.ICalendar.DataObjects
             }
         }
 
-        private void deserializeComponents(List<string> contentLines)
+        private void deserializeComponents(string content)
         {
             // TODO: think about multi-threading optimization (e.g. parsing components parallel)
 
-            do
+            int offset = 0;
+
+            while (offset < content.Length && offset != -1)
             {
                 // extract the lines of the next iCalendar component
-                var componentLines = contentLines.GetRange(0, indexOfClosingTag(contentLines));
-                string componentContent = componentLines.Aggregate((x, y) => $"{ x }\r\n{ y }");
+                int endOfComponentIndex = endIndexOfElementBound(content.Substring(offset));
+                var componentContent = content.Substring(offset, endOfComponentIndex - offset).Trim();
+                // TODO: make sure that the indexing is correct and does not run into out-of-bounds error
 
                 // parse the component from the extracted lines
                 var component = deserializeComponent(componentContent);
                 Components.Append(component);
 
                 // remove already parsed lines
-                contentLines = contentLines.GetRange(componentLines.Count, contentLines.Count - componentLines.Count);
+                offset = endOfComponentIndex;
             }
-            // BEGIN tag => begin of next iCalendar component, END tag => end of iCalendar object
-            while (contentLines.Count > 0 && contentLines.First().ToUpper().StartsWith("BEGIN:"));
         }
 
-        private int indexOfClosingTag(List<string> contentLines)
+        private int endIndexOfElementBound(string content)
         {
+            // init depth and offset, so the first begin flag gets skipped
             int depth = 1;
-            int index;
+            int offset = content.IndexOf("BEGIN:") + 6;
 
-            // loop through content lines until the end is reached or the closing tag was found
-            for (index = 1; index < contentLines.Count && depth > 0; index++)
+            // go through content until closing flag is found
+            while (offset < content.Length && depth > 0)
             {
-                // BEGIN tag => increase depth, END tag => decrease depth
-                if (contentLines[index]?.ToUpper().StartsWith("BEGIN:") == true) { depth++; }
-                if (contentLines[index]?.ToUpper().StartsWith("END:") == true) { depth--; }
+                // find next beginning and ending flag
+                int indexOfNextBeginFlag = content.IndexOf("\nBEGIN:", offset);
+                int indexOfNextEndFlag = content.IndexOf("\nEND:", offset);
+
+                // increment / decrement depth
+                if (indexOfNextBeginFlag != -1 && indexOfNextBeginFlag < indexOfNextEndFlag) { depth++; } else { depth--; }
+
+                // update offset
+                offset = Math.Min(indexOfNextBeginFlag, indexOfNextEndFlag) + 1;
             }
 
-            return index;
+            // find the end of the last ending flag (line break)
+            return Math.Min(content.IndexOf('\r', offset), content.IndexOf('\n', offset));
         }
 
         private ICalendarComponent deserializeComponent(string content)
