@@ -11,4 +11,12 @@
     <PackageReference Include="TimeZoneConverter" Version="3.1.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="DataObjects\ComponentProperty\Alarm\" />
+    <Folder Include="DataObjects\ComponentProperty\ChangeManagement\" />
+    <Folder Include="DataObjects\ComponentProperty\Recurrence\" />
+    <Folder Include="DataObjects\ComponentProperty\Relationship\" />
+    <Folder Include="DataObjects\ComponentProperty\TimeZone\" />
+  </ItemGroup>
+
 </Project>
