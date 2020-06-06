@@ -1,9 +1,9 @@
-﻿using MT.Tools.ICalendar.DataObjects.PropertyValue.Time;
+﻿using MT.Tools.ICalendar.DataObjects.PropertyValue;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace MT.Tools.ICalendar.DataObjects.PropertyValue.RecurrenceRule
+namespace MT.Tools.ICalendar.DataObjects.PropertyValue
 {
     public enum DelimiterRuleType
     {

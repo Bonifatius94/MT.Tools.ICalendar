@@ -2,7 +2,6 @@
 using MT.Tools.ICalendar.DataObjects.Factory;
 using MT.Tools.ICalendar.DataObjects.PropertyParameter;
 using MT.Tools.ICalendar.DataObjects.PropertyValue;
-using MT.Tools.ICalendar.DataObjects.PropertyValue.Other;
 using System;
 using System.Collections.Generic;
 using System.Linq;

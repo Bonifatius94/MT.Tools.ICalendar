@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace MT.Tools.ICalendar.DataObjects.PropertyValue.Other
+namespace MT.Tools.ICalendar.DataObjects.PropertyValue
 {
     // TODO: determine what is the difference between this and UriValue
 

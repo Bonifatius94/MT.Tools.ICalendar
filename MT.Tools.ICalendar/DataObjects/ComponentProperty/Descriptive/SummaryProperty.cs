@@ -1,6 +1,6 @@
 ﻿using MT.Tools.ICalendar.DataObjects.Factory;
 using MT.Tools.ICalendar.DataObjects.PropertyParameter;
-using MT.Tools.ICalendar.DataObjects.PropertyValue.Primitive;
+using MT.Tools.ICalendar.DataObjects.PropertyValue;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,21 +8,21 @@ using System.Text;
 
 namespace MT.Tools.ICalendar.DataObjects.ComponentProperty
 {
-    public class DescriptionProperty : IComponentProperty
+    public class SummaryProperty : IComponentProperty
     {
         #region Constructor
 
-        public DescriptionProperty() { }
+        public SummaryProperty() { }
 
-        public DescriptionProperty(TextValue description) { Description = description; }
+        public SummaryProperty(TextValue summary) { Summary = summary; }
 
-        public DescriptionProperty(TextValue description, IEnumerable<IPropertyParameter> parameters) { Description = description; Parameters = parameters; }
+        public SummaryProperty(TextValue summary, IEnumerable<IPropertyParameter> parameters) { Summary = summary; Parameters = parameters; }
 
         #endregion Constructor
 
         #region Members
 
-        public ComponentPropertyType Type => ComponentPropertyType.Description;
+        public ComponentPropertyType Type => ComponentPropertyType.Summary;
 
         public IEnumerable<IPropertyParameter> Parameters { get; private set; } = new List<IPropertyParameter>();
 
@@ -31,7 +31,7 @@ namespace MT.Tools.ICalendar.DataObjects.ComponentProperty
         public AlternateTextRepresentationParamter AltTextRep =>
             Parameters.Where(x => x.GetType() == typeof(AlternateTextRepresentationParamter)).FirstOrDefault() as AlternateTextRepresentationParamter;
 
-        public TextValue Description { get; set; }
+        public TextValue Summary { get; set; }
 
         #endregion Members
 
@@ -39,19 +39,19 @@ namespace MT.Tools.ICalendar.DataObjects.ComponentProperty
 
         public void Deserialize(string content)
         {
-            // make sure that the parameter starts with CATEGORIES
-            if (!content.ToUpper().StartsWith("DESCRIPTION")) { throw new ArgumentException("Invalid description detected! Component property needs to start with DESCRIPTION keyword!"); }
+            // make sure that the parameter starts with SUMMARY
+            if (!content.ToUpper().StartsWith("SUMMARY")) { throw new ArgumentException("Invalid summary detected! Component property needs to start with SUMMARY keyword!"); }
 
             // deserialize parameters
             Parameters =
-                content.Substring("DESCRIPTION".Length, content.IndexOf(':') - "DESCRIPTION".Length)
+                content.Substring("SUMMARY".Length, content.IndexOf(':') - "SUMMARY".Length)
                 .Split(';', StringSplitOptions.RemoveEmptyEntries)
                 .Select(x => CalendarFactory.DeserializePropertyParameter(x))
                 .ToList();
 
             // extract the value content
             string valueContent = content.Substring(content.IndexOf(':')).Trim();
-            Description = ObjectSerializer.Deserialize<TextValue>(valueContent);
+            Summary = ObjectSerializer.Deserialize<TextValue>(valueContent);
 
             // make sure that the language and altrep parameters only occur once
             if (Parameters.Where(x => x.GetType() == typeof(LanguageParameter)).Count() > 1) { throw new ArgumentException("Invalid parameter detected! Language parameter needs to be unique!"); }
@@ -61,7 +61,7 @@ namespace MT.Tools.ICalendar.DataObjects.ComponentProperty
         public string Serialize()
         {
             string paramsContent = Parameters.Select(x => x.Serialize()).Aggregate((x, y) => x + ";" + y);
-            return $"DESCRIPTION{ (string.IsNullOrEmpty(paramsContent) ? "" : ";" + paramsContent) }:{ Description.Serialize() }";
+            return $"SUMMARY{ (string.IsNullOrEmpty(paramsContent) ? "" : ";" + paramsContent) }:{ Summary.Serialize() }";
         }
 
         #endregion Methods

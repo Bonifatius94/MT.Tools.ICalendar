@@ -1,22 +1,24 @@
-﻿using MT.Tools.ICalendar.DataObjects.Factory;
+﻿using MT.Tools.ICalendar.DataObjects.ComponentProperty;
+using MT.Tools.ICalendar.DataObjects.Factory;
 using MT.Tools.ICalendar.DataObjects.PropertyParameter;
-using MT.Tools.ICalendar.DataObjects.PropertyValue.Primitive;
+using MT.Tools.ICalendar.DataObjects.PropertyValue;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text;
 
 namespace MT.Tools.ICalendar.DataObjects.ComponentProperty
 {
-    public class ResourcesProperty : IComponentProperty
+    public class CategoriesProperty : IComponentProperty
     {
         #region Constructor
 
-        public ResourcesProperty() { }
+        public CategoriesProperty() { }
 
-        public ResourcesProperty(IEnumerable<TextValue> resources) { Resources = resources; }
+        public CategoriesProperty(IEnumerable<TextValue> categories) { Categories = categories; }
 
-        public ResourcesProperty(IEnumerable<TextValue> resources, IEnumerable<IPropertyParameter> parameters) { Resources = resources; Parameters = parameters; }
+        public CategoriesProperty(IEnumerable<TextValue> categories, IEnumerable<IPropertyParameter> parameters) { Categories = categories; Parameters = parameters; }
 
         #endregion Constructor
 
@@ -28,10 +30,7 @@ namespace MT.Tools.ICalendar.DataObjects.ComponentProperty
 
         public LanguageParameter Language => Parameters.Where(x => x.GetType() == typeof(LanguageParameter)).FirstOrDefault() as LanguageParameter;
 
-        public AlternateTextRepresentationParamter AltTextRep =>
-            Parameters.Where(x => x.GetType() == typeof(AlternateTextRepresentationParamter)).FirstOrDefault() as AlternateTextRepresentationParamter;
-
-        public IEnumerable<TextValue> Resources { get; private set; } = new List<TextValue>();
+        public IEnumerable<TextValue> Categories { get; private set; } = new List<TextValue>();
 
         #endregion Members
 
@@ -40,29 +39,28 @@ namespace MT.Tools.ICalendar.DataObjects.ComponentProperty
         public void Deserialize(string content)
         {
             // make sure that the parameter starts with CATEGORIES
-            if (!content.ToUpper().StartsWith("RESOURCES")) { throw new ArgumentException("Invalid resources detected! Component property needs to start with RESOURCES keyword!"); }
+            if (!content.ToUpper().StartsWith("CATEGORIES")) { throw new ArgumentException("Invalid categories detected! Component property needs to start with CATEGORIES keyword!"); }
 
             // deserialize parameters
             Parameters =
-                content.Substring("RESOURCES".Length, content.IndexOf(':') - "RESOURCES".Length)
+                content.Substring("CATEGORIES".Length, content.IndexOf(':') - "CATEGORIES".Length)
                 .Split(';', StringSplitOptions.RemoveEmptyEntries)
                 .Select(x => CalendarFactory.DeserializePropertyParameter(x))
                 .ToList();
 
             // extract the value content
             string valueContent = content.Substring(content.IndexOf(':')).Trim();
-            Resources = content.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(x => ObjectSerializer.Deserialize<TextValue>(x)).ToList();
+            Categories = content.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(x => ObjectSerializer.Deserialize<TextValue>(x)).ToList();
 
             // make sure that the language parameter only occurs once
             if (Parameters.Where(x => x.GetType() == typeof(LanguageParameter)).Count() > 1) { throw new ArgumentException("Invalid parameter detected! Language parameter needs to be unique!"); }
-            if (Parameters.Where(x => x.GetType() == typeof(AlternateTextRepresentationParamter)).Count() > 1) { throw new ArgumentException("Invalid parameter detected! AlternateTextRepresentation parameter needs to be unique!"); }
         }
 
         public string Serialize()
         {
             string paramsContent = Parameters.Select(x => x.Serialize()).Aggregate((x, y) => x + ";" + y);
-            string valuesContent = Resources.Select(x => x.Value).Aggregate((x, y) => x + "," + y);
-            return $"RESOURCES{ (string.IsNullOrEmpty(paramsContent) ? "" : ";" + paramsContent) }:{ valuesContent }";
+            string valuesContent = Categories.Select(x => x.Value).Aggregate((x, y) => x + "," + y);
+            return $"CATEGORIES{ (string.IsNullOrEmpty(paramsContent) ? "" : ";" + paramsContent) }:{ valuesContent }";
         }
 
         #endregion Methods

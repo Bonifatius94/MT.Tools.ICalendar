@@ -4,9 +4,6 @@ using System.Linq;
 using MT.Tools.ICalendar.DataObjects.Collection;
 using MT.Tools.ICalendar.DataObjects.ComponentProperty;
 using MT.Tools.ICalendar.DataObjects.PropertyValue;
-using MT.Tools.ICalendar.DataObjects.PropertyValue.Other;
-using MT.Tools.ICalendar.DataObjects.PropertyValue.Primitive;
-using MT.Tools.ICalendar.DataObjects.PropertyValue.Time;
 
 namespace MT.Tools.ICalendar.DataObjects.CalendarComponent
 {

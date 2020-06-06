@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace MT.Tools.ICalendar.DataObjects.PropertyValue.Primitive
+namespace MT.Tools.ICalendar.DataObjects.PropertyValue
 {
     public class BooleanValue : IPropertyValue
     {

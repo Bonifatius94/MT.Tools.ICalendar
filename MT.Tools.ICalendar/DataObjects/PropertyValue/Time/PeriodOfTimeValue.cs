@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace MT.Tools.ICalendar.DataObjects.PropertyValue.Time
+namespace MT.Tools.ICalendar.DataObjects.PropertyValue
 {
     public enum PeriodOfTimeValueType
     {

@@ -1,4 +1,4 @@
-﻿using MT.Tools.ICalendar.DataObjects.PropertyBase;
+﻿using MT.Tools.ICalendar.DataObjects.ComponentProperty;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -26,7 +26,7 @@ namespace MT.Tools.ICalendar.DataObjects.CalendarComponent
 
         public CalendarComponentType Type => CalendarComponentType.Todo;
 
-        public IEnumerable<ICalendarProperty> Properties { get; } = new List<ICalendarProperty>();
+        public IEnumerable<IComponentProperty> Properties { get; } = new List<IComponentProperty>();
 
         // required properties (S. 56):
         // ====================
@@ -83,6 +83,12 @@ namespace MT.Tools.ICalendar.DataObjects.CalendarComponent
         {
             // TODO: implement component
             throw new NotImplementedException();
+
+            // 1) parse properties (generic)
+
+            // 2) validate the properties (e.g. unique property occurance, existance of required properties)
+
+            // 3) parse sub-components
         }
 
         public string Serialize()

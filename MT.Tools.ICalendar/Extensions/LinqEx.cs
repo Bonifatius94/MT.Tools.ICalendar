@@ -57,6 +57,23 @@ namespace MT.Tools.ICalendar.Extensions
             }
         }
 
+        public static Dictionary<TValue, TKey> InversePairs<TKey, TValue>(this IDictionary<TKey, TValue> source)
+        {
+            var dictionary = new Dictionary<TValue, TKey>();
+
+            // loop through all pairs of the input dictionary
+            foreach (var entry in source)
+            {
+                // make sure that the dictionary is reversible
+                if (dictionary.ContainsKey(entry.Value)) { throw new ArgumentException("Irreversible source dictionary detected! At least one value is duplicate!"); }
+
+                // apply the key to the new dictionary
+                dictionary.Add(entry.Value, entry.Key);
+            }
+
+            return dictionary;
+        }
+
         #endregion Methods
     }
 }

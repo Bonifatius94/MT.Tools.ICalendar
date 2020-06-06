@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace MT.Tools.ICalendar.DataObjects.PropertyValue.Time
+namespace MT.Tools.ICalendar.DataObjects.PropertyValue
 {
     public class DateValue : IPropertyValue
     {

@@ -1,5 +1,4 @@
-﻿using MT.Tools.ICalendar.DataObjects.PropertyBase;
-using MT.Tools.ICalendar.DataObjects.PropertyValue.Primitive;
+﻿using MT.Tools.ICalendar.DataObjects.PropertyValue;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +13,7 @@ namespace MT.Tools.ICalendar.DataObjects.CalendarComponent
 
         public CustomComponent() { }
 
-        public CustomComponent(string token, ICalendarProperty<TextValue> property)
+        public CustomComponent(string token, CalendarTextProperty property)
         {
             Token = token;
             Property = property;
@@ -27,7 +26,7 @@ namespace MT.Tools.ICalendar.DataObjects.CalendarComponent
         public CalendarComponentType Type => CalendarComponentType.Custom;
 
         public string Token { get; set; }
-        public ICalendarProperty<TextValue> Property { get; set; }
+        public CalendarTextProperty Property { get; set; }
 
         #endregion Members
 
@@ -37,6 +36,7 @@ namespace MT.Tools.ICalendar.DataObjects.CalendarComponent
         {
             // get the single lines
             var parts = content.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()).ToArray();
+            // TODO: remove linq statement and use string.Substring / string.IndexOf instead for extracting the data required
 
             // make sure that the format is correct
             if (parts.Length != 3 || !parts[0].StartsWith("BEGIN:") || !parts[2].StartsWith("END:")) { throw new ArgumentException("Invalid custom component format!"); }
@@ -49,7 +49,7 @@ namespace MT.Tools.ICalendar.DataObjects.CalendarComponent
             if (Token?.Equals(endToken) != true) { throw new ArgumentException("Begin and end token do not match!"); }
 
             // parse content as text
-            Property = ObjectSerializer.Deserialize<SimpleCalendarProperty<TextValue>>(parts[1]);
+            Property = ObjectSerializer.Deserialize<CalendarTextProperty>(parts[1]);
         }
 
         public string Serialize()

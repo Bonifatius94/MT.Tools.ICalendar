@@ -22,13 +22,13 @@ namespace MT.Tools.ICalendar.DataObjects
     //}
 
     // TODO: check if it is useful to create property classes for each of the four possibilities
-    public class CalendarProperty : ISerializableObject
+    public class CalendarTextProperty : ISerializableObject
     {
         #region Constructor
 
-        public CalendarProperty() { }
+        public CalendarTextProperty() { }
 
-        public CalendarProperty(string key, string value) { Key = key; Value = value; }
+        public CalendarTextProperty(string key, string value) { Key = key; Value = value; }
 
         #endregion Constructor
 

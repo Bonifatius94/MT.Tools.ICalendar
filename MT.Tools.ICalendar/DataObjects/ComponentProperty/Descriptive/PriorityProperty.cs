@@ -1,6 +1,6 @@
 ﻿using MT.Tools.ICalendar.DataObjects.Factory;
 using MT.Tools.ICalendar.DataObjects.PropertyParameter;
-using MT.Tools.ICalendar.DataObjects.PropertyValue.Primitive;
+using MT.Tools.ICalendar.DataObjects.PropertyValue;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,7 +34,7 @@ namespace MT.Tools.ICalendar.DataObjects.ComponentProperty
 
         public void Deserialize(string content)
         {
-            // make sure that the parameter starts with CATEGORIES
+            // make sure that the parameter starts with PRIORITY
             if (!content.ToUpper().StartsWith("PRIORITY")) { throw new ArgumentException("Invalid priority detected! Component property needs to start with PRIORITY keyword!"); }
 
             // deserialize parameters

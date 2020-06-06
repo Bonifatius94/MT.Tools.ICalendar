@@ -1,11 +1,10 @@
-﻿using MT.Tools.ICalendar.DataObjects.PropertyValue.Primitive;
-using MT.Tools.ICalendar.DataObjects.PropertyValue.Time;
+﻿using MT.Tools.ICalendar.DataObjects.PropertyValue;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace MT.Tools.ICalendar.DataObjects.PropertyValue.RecurrenceRule
+namespace MT.Tools.ICalendar.DataObjects.PropertyValue
 {
     // rule types are defined to determine expand / limit by numeric comparison to frequency (limit: freq <= rule type, expand: freq > rule type)
     public enum ByListRuleType
