@@ -30,11 +30,13 @@ namespace MT.Tools.ICalendar.DataObjects.ComponentProperty
 
         #region Members
 
+        public string Markup => "CLASS";
         public ComponentPropertyType Type => ComponentPropertyType.Classification;
 
         public IEnumerable<IPropertyParameter> Parameters { get; private set; } = new List<IPropertyParameter>();
 
         public ClassificationValue Classification { get; set; } = ClassificationValue.PUBLIC;
+        public IPropertyValue Value => Classification;
 
         #endregion Members
 
@@ -43,24 +45,24 @@ namespace MT.Tools.ICalendar.DataObjects.ComponentProperty
         public void Deserialize(string content)
         {
             // make sure that the parameter starts with CLASS
-            if (!content.ToUpper().StartsWith("CLASS")) { throw new ArgumentException("Invalid categories detected! Component property needs to start with CLASS keyword!"); }
+            if (!content.ToUpper().StartsWith(Markup)) { throw new ArgumentException($"Invalid categories detected! Component property needs to start with { Markup } keyword!"); }
 
             // deserialize parameters
             Parameters =
-                content.Substring("CLASS".Length, content.IndexOf(':') - "CLASS".Length)
+                content.Substring(Markup.Length, content.IndexOf(':') - Markup.Length)
                 .Split(';', StringSplitOptions.RemoveEmptyEntries)
                 .Select(x => CalendarFactory.DeserializePropertyParameter(x))
                 .ToList();
 
             // extract the value content
-            string valueContent = content.Substring(content.IndexOf(':')).Trim();
+            string valueContent = content.Substring(content.IndexOf(':') + 1).Trim();
             Classification = ObjectSerializer.Deserialize<ClassificationValue>(valueContent);
         }
 
         public string Serialize()
         {
             string paramsContent = Parameters.Select(x => x.Serialize()).Aggregate((x, y) => x + ";" + y);
-            return $"CLASS{ (string.IsNullOrEmpty(paramsContent) ? "" : ";" + paramsContent) }:{ Classification }";
+            return $"{ Markup }{ (string.IsNullOrEmpty(paramsContent) ? "" : ";" + paramsContent) }:{ Classification }";
         }
 
         #endregion Methods

@@ -8,6 +8,8 @@ namespace MT.Tools.ICalendar.DataObjects.PropertyValue
     {
         #region Constructor
 
+        // TODO: add support for streams
+
         public BinaryValue() { }
 
         public BinaryValue(byte[] bytes) { Bytes = bytes; }

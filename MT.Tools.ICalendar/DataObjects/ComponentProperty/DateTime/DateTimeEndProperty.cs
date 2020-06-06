@@ -22,6 +22,7 @@ namespace MT.Tools.ICalendar.DataObjects.ComponentProperty
 
         #region Members
 
+        public string Markup => "DTEND";
         public ComponentPropertyType Type => ComponentPropertyType.DateTimeEnd;
 
         public IEnumerable<IPropertyParameter> Parameters { get; private set; } = new List<IPropertyParameter>();
@@ -29,7 +30,8 @@ namespace MT.Tools.ICalendar.DataObjects.ComponentProperty
         public ValueTypeParameter ValueType => Parameters.FirstOrDefault(x => x.GetType() == typeof(ValueTypeParameter)) as ValueTypeParameter;
         public TimeZoneIdParameter TimezoneId => Parameters.FirstOrDefault(x => x.GetType() == typeof(TimeZoneIdParameter)) as TimeZoneIdParameter;
 
-        public DateTimeValue DateTime { get; set; }
+        public DateTimeOrDateValue DateTime { get; set; }
+        public IPropertyValue Value => DateTime;
 
         #endregion Members
 
@@ -38,24 +40,34 @@ namespace MT.Tools.ICalendar.DataObjects.ComponentProperty
         public void Deserialize(string content)
         {
             // make sure that the parameter starts with DTEND
-            if (!content.ToUpper().StartsWith("DTEND")) { throw new ArgumentException("Invalid date-time end detected! Component property needs to start with DTEND keyword!"); }
+            if (!content.ToUpper().StartsWith(Markup)) { throw new ArgumentException($"Invalid date-time end detected! Component property needs to start with { Markup } keyword!"); }
 
             // deserialize parameters
             Parameters =
-                content.Substring("DTEND".Length, content.IndexOf(':') - "DTEND".Length)
+                content.Substring(Markup.Length, content.IndexOf(':') - Markup.Length)
                 .Split(';', StringSplitOptions.RemoveEmptyEntries)
                 .Select(x => CalendarFactory.DeserializePropertyParameter(x))
                 .ToList();
 
             // extract the value content
-            string valueContent = content.Substring(content.IndexOf(':')).Trim();
-            DateTime = ObjectSerializer.Deserialize<DateTimeValue>(valueContent);
+            string valueContent = content.Substring(content.IndexOf(':') + 1).Trim();
+            
+            // deserialize datetime
+            if ()
+            {
+
+            }
+            // deserialize only date without time
+            else
+            {
+
+            }
         }
 
         public string Serialize()
         {
             string paramsContent = Parameters.Select(x => x.Serialize()).Aggregate((x, y) => x + ";" + y);
-            return $"DTEND{ (string.IsNullOrEmpty(paramsContent) ? "" : ";" + paramsContent) }:{ DateTime }";
+            return $"{ Markup }{ (string.IsNullOrEmpty(paramsContent) ? "" : ";" + paramsContent) }:{ DateTime }";
         }
 
         #endregion Methods

@@ -22,6 +22,7 @@ namespace MT.Tools.ICalendar.DataObjects.ComponentProperty
 
         #region Members
 
+        public string Markup => "DESCRIPTION";
         public ComponentPropertyType Type => ComponentPropertyType.Description;
 
         public IEnumerable<IPropertyParameter> Parameters { get; private set; } = new List<IPropertyParameter>();
@@ -32,6 +33,7 @@ namespace MT.Tools.ICalendar.DataObjects.ComponentProperty
             Parameters.Where(x => x.GetType() == typeof(AlternateTextRepresentationParamter)).FirstOrDefault() as AlternateTextRepresentationParamter;
 
         public TextValue Description { get; set; }
+        public IPropertyValue Value => Description;
 
         #endregion Members
 
@@ -40,17 +42,17 @@ namespace MT.Tools.ICalendar.DataObjects.ComponentProperty
         public void Deserialize(string content)
         {
             // make sure that the parameter starts with DESCRIPTION
-            if (!content.ToUpper().StartsWith("DESCRIPTION")) { throw new ArgumentException("Invalid description detected! Component property needs to start with DESCRIPTION keyword!"); }
+            if (!content.ToUpper().StartsWith(Markup)) { throw new ArgumentException($"Invalid description detected! Component property needs to start with { Markup } keyword!"); }
 
             // deserialize parameters
             Parameters =
-                content.Substring("DESCRIPTION".Length, content.IndexOf(':') - "DESCRIPTION".Length)
+                content.Substring(Markup.Length, content.IndexOf(':') - Markup.Length)
                 .Split(';', StringSplitOptions.RemoveEmptyEntries)
                 .Select(x => CalendarFactory.DeserializePropertyParameter(x))
                 .ToList();
 
             // extract the value content
-            string valueContent = content.Substring(content.IndexOf(':')).Trim();
+            string valueContent = content.Substring(content.IndexOf(':') + 1).Trim();
             Description = ObjectSerializer.Deserialize<TextValue>(valueContent);
 
             // make sure that the language and altrep parameters only occur once
@@ -61,7 +63,7 @@ namespace MT.Tools.ICalendar.DataObjects.ComponentProperty
         public string Serialize()
         {
             string paramsContent = Parameters.Select(x => x.Serialize()).Aggregate((x, y) => x + ";" + y);
-            return $"DESCRIPTION{ (string.IsNullOrEmpty(paramsContent) ? "" : ";" + paramsContent) }:{ Description.Serialize() }";
+            return $"{ Markup }{ (string.IsNullOrEmpty(paramsContent) ? "" : ";" + paramsContent) }:{ Description.Serialize() }";
         }
 
         #endregion Methods

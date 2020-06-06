@@ -22,11 +22,13 @@ namespace MT.Tools.ICalendar.DataObjects.ComponentProperty
 
         #region Members
 
+        public string Markup => "COMPLETED";
         public ComponentPropertyType Type => ComponentPropertyType.Classification;
 
         public IEnumerable<IPropertyParameter> Parameters { get; private set; } = new List<IPropertyParameter>();
 
         public DateTimeValue DateTime { get; set; }
+        public IPropertyValue Value => DateTime;
 
         #endregion Members
 
@@ -35,24 +37,24 @@ namespace MT.Tools.ICalendar.DataObjects.ComponentProperty
         public void Deserialize(string content)
         {
             // make sure that the parameter starts with COMPLETED
-            if (!content.ToUpper().StartsWith("COMPLETED")) { throw new ArgumentException("Invalid completed detected! Component property needs to start with COMPLETED keyword!"); }
+            if (!content.ToUpper().StartsWith(Markup)) { throw new ArgumentException($"Invalid completed detected! Component property needs to start with { Markup } keyword!"); }
 
             // deserialize parameters
             Parameters =
-                content.Substring("COMPLETED".Length, content.IndexOf(':') - "COMPLETED".Length)
+                content.Substring(Markup.Length, content.IndexOf(':') - Markup.Length)
                 .Split(';', StringSplitOptions.RemoveEmptyEntries)
                 .Select(x => CalendarFactory.DeserializePropertyParameter(x))
                 .ToList();
 
             // extract the value content
-            string valueContent = content.Substring(content.IndexOf(':')).Trim();
+            string valueContent = content.Substring(content.IndexOf(':') + 1).Trim();
             DateTime = ObjectSerializer.Deserialize<DateTimeValue>(valueContent);
         }
 
         public string Serialize()
         {
             string paramsContent = Parameters.Select(x => x.Serialize()).Aggregate((x, y) => x + ";" + y);
-            return $"COMPLETED{ (string.IsNullOrEmpty(paramsContent) ? "" : ";" + paramsContent) }:{ DateTime }";
+            return $"{ Markup }{ (string.IsNullOrEmpty(paramsContent) ? "" : ";" + paramsContent) }:{ DateTime }";
         }
 
         #endregion Methods

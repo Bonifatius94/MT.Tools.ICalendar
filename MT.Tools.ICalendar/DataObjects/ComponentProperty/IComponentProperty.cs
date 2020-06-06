@@ -1,4 +1,6 @@
-﻿using System;
+﻿using MT.Tools.ICalendar.DataObjects.PropertyParameter;
+using MT.Tools.ICalendar.DataObjects.PropertyValue;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -31,7 +33,13 @@ namespace MT.Tools.ICalendar.DataObjects.ComponentProperty
     {
         #region Members
 
+        string Markup { get; }
+
         ComponentPropertyType Type { get; }
+
+        IEnumerable<IPropertyParameter> Parameters { get; }
+
+        IPropertyValue Value { get; }
 
         #endregion Members
     }

@@ -8,27 +8,27 @@ using System.Text;
 
 namespace MT.Tools.ICalendar.DataObjects.ComponentProperty
 {
-    public class PriorityProperty : IComponentProperty
+    public class CustomComponentProperty : IComponentProperty
     {
         #region Constructor
 
-        public PriorityProperty() { }
+        public CustomComponentProperty() { }
 
-        public PriorityProperty(IntegerValue priority) { Priority = priority; }
+        public CustomComponentProperty(TextValue customText) { CustomText = customText; }
 
-        public PriorityProperty(IntegerValue priority, IEnumerable<IPropertyParameter> parameters) { Priority = priority; Parameters = parameters; }
+        public CustomComponentProperty(TextValue customText, IEnumerable<IPropertyParameter> parameters) { CustomText = customText; Parameters = parameters; }
 
         #endregion Constructor
 
         #region Members
 
-        public string Markup => "PRIORITY";
-        public ComponentPropertyType Type => ComponentPropertyType.Priority;
+        public string Markup { get; private set; }
+        public ComponentPropertyType Type => ComponentPropertyType.Description;
 
         public IEnumerable<IPropertyParameter> Parameters { get; private set; } = new List<IPropertyParameter>();
 
-        public IntegerValue Priority { get; set; } = new IntegerValue(0);
-        public IPropertyValue Value => Priority;
+        public TextValue CustomText { get; set; }
+        public IPropertyValue Value => CustomText;
 
         #endregion Members
 
@@ -36,8 +36,8 @@ namespace MT.Tools.ICalendar.DataObjects.ComponentProperty
 
         public void Deserialize(string content)
         {
-            // make sure that the parameter starts with PRIORITY
-            if (!content.ToUpper().StartsWith(Markup)) { throw new ArgumentException($"Invalid priority detected! Component property needs to start with { Markup } keyword!"); }
+            // deserialize markup
+            Markup = content.Substring(0, Math.Min(content.IndexOf(';'), content.IndexOf(':')));
 
             // deserialize parameters
             Parameters =
@@ -48,15 +48,13 @@ namespace MT.Tools.ICalendar.DataObjects.ComponentProperty
 
             // extract the value content
             string valueContent = content.Substring(content.IndexOf(':') + 1).Trim();
-            Priority = ObjectSerializer.Deserialize<IntegerValue>(valueContent);
-
-            if (Priority.Value > 9) { throw new ArgumentException("Invalid property value detected! Priority needs to be between 0 and 9 (both included)!"); }
+            CustomText = ObjectSerializer.Deserialize<TextValue>(valueContent);
         }
 
         public string Serialize()
         {
             string paramsContent = Parameters.Select(x => x.Serialize()).Aggregate((x, y) => x + ";" + y);
-            return $"{ Markup }{ (string.IsNullOrEmpty(paramsContent) ? "" : ";" + paramsContent) }:{ Priority.Serialize() }";
+            return $"{ Markup }{ (string.IsNullOrEmpty(paramsContent) ? "" : ";" + paramsContent) }:{ CustomText.Serialize() }";
         }
 
         #endregion Methods

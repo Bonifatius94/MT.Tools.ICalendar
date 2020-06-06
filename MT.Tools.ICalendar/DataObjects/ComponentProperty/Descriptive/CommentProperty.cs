@@ -22,6 +22,7 @@ namespace MT.Tools.ICalendar.DataObjects.ComponentProperty
 
         #region Members
 
+        public string Markup => "COMMENT";
         public ComponentPropertyType Type => ComponentPropertyType.Comment;
 
         public IEnumerable<IPropertyParameter> Parameters { get; private set; } = new List<IPropertyParameter>();
@@ -32,6 +33,7 @@ namespace MT.Tools.ICalendar.DataObjects.ComponentProperty
             Parameters.Where(x => x.GetType() == typeof(AlternateTextRepresentationParamter)).FirstOrDefault() as AlternateTextRepresentationParamter;
 
         public TextValue Comment { get; set; }
+        public IPropertyValue Value => Comment;
 
         #endregion Members
 
@@ -40,17 +42,17 @@ namespace MT.Tools.ICalendar.DataObjects.ComponentProperty
         public void Deserialize(string content)
         {
             // make sure that the parameter starts with COMMENT
-            if (!content.ToUpper().StartsWith("COMMENT")) { throw new ArgumentException("Invalid comment detected! Component property needs to start with COMMENT keyword!"); }
+            if (!content.ToUpper().StartsWith(Markup)) { throw new ArgumentException($"Invalid comment detected! Component property needs to start with { Markup } keyword!"); }
 
             // deserialize parameters
             Parameters =
-                content.Substring("COMMENT".Length, content.IndexOf(':') - "COMMENT".Length)
+                content.Substring(Markup.Length, content.IndexOf(':') - Markup.Length)
                 .Split(';', StringSplitOptions.RemoveEmptyEntries)
                 .Select(x => CalendarFactory.DeserializePropertyParameter(x))
                 .ToList();
 
             // extract the value content
-            string valueContent = content.Substring(content.IndexOf(':')).Trim();
+            string valueContent = content.Substring(content.IndexOf(':') + 1).Trim();
             Comment = ObjectSerializer.Deserialize<TextValue>(valueContent);
 
             // make sure that the language and altrep parameters only occur once
@@ -61,7 +63,7 @@ namespace MT.Tools.ICalendar.DataObjects.ComponentProperty
         public string Serialize()
         {
             string paramsContent = Parameters.Select(x => x.Serialize()).Aggregate((x, y) => x + ";" + y);
-            return $"COMMENT{ (string.IsNullOrEmpty(paramsContent) ? "" : ";" + paramsContent) }:{ Comment.Serialize() }";
+            return $"{ Markup }{ (string.IsNullOrEmpty(paramsContent) ? "" : ";" + paramsContent) }:{ Comment.Serialize() }";
         }
 
         #endregion Methods

@@ -1,6 +1,7 @@
 ﻿using MT.Tools.ICalendar.DataObjects.Factory;
 using MT.Tools.ICalendar.DataObjects.PropertyParameter;
 using MT.Tools.ICalendar.DataObjects.PropertyValue;
+using MT.Tools.ICalendar.DataObjects.PropertyValue.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,20 +15,21 @@ namespace MT.Tools.ICalendar.DataObjects.ComponentProperty
 
         public GeoPositionProperty() { }
 
-        public GeoPositionProperty(FloatValue latitude, FloatValue longitude) { Latitude = latitude; Longitude = longitude; }
+        public GeoPositionProperty(GeoPositionValue position) { Position = position; }
 
-        public GeoPositionProperty(FloatValue latitude, FloatValue longitude, IEnumerable<IPropertyParameter> parameters) { Latitude = latitude; Longitude = longitude; Parameters = parameters; }
+        public GeoPositionProperty(GeoPositionValue position, IEnumerable<IPropertyParameter> parameters) { Position = position; Parameters = parameters; }
 
         #endregion Constructor
 
         #region Members
 
+        public string Markup => "GEO";
         public ComponentPropertyType Type => ComponentPropertyType.GeoPosition;
 
         public IEnumerable<IPropertyParameter> Parameters { get; private set; } = new List<IPropertyParameter>();
 
-        public FloatValue Latitude { get; set; }
-        public FloatValue Longitude { get; set; }
+        public GeoPositionValue Position { get; set; }
+        public IPropertyValue Value => Position;
 
         #endregion Members
 
@@ -36,26 +38,24 @@ namespace MT.Tools.ICalendar.DataObjects.ComponentProperty
         public void Deserialize(string content)
         {
             // make sure that the parameter starts with GEO
-            if (!content.ToUpper().StartsWith("GEO")) { throw new ArgumentException("Invalid geo position detected! Component property needs to start with GEO keyword!"); }
+            if (!content.ToUpper().StartsWith(Markup)) { throw new ArgumentException($"Invalid geo position detected! Component property needs to start with { Markup } keyword!"); }
 
             // deserialize parameters
             Parameters =
-                content.Substring("GEO".Length, content.IndexOf(':') - "GEO".Length)
+                content.Substring(Markup.Length, content.IndexOf(':') - Markup.Length)
                 .Split(';', StringSplitOptions.RemoveEmptyEntries)
                 .Select(x => CalendarFactory.DeserializePropertyParameter(x))
                 .ToList();
 
             // extract the value content
-            string valueContent = content.Substring(content.IndexOf(':')).Trim();
-            var floatValues = valueContent.Split(';');
-            Latitude = ObjectSerializer.Deserialize<FloatValue>(floatValues[0]);
-            Longitude = ObjectSerializer.Deserialize<FloatValue>(floatValues[1]);
+            string valueContent = content.Substring(content.IndexOf(':') + 1).Trim();
+            Position = ObjectSerializer.Deserialize<GeoPositionValue>(valueContent);
         }
 
         public string Serialize()
         {
             string paramsContent = Parameters.Select(x => x.Serialize()).Aggregate((x, y) => x + ";" + y);
-            return $"GEO{ (string.IsNullOrEmpty(paramsContent) ? "" : ";" + paramsContent) }:{ Latitude.Serialize() };{ Longitude.Serialize() }";
+            return $"{ Markup }{ (string.IsNullOrEmpty(paramsContent) ? "" : ";" + paramsContent) }:{ Position.Serialize() }";
         }
 
         #endregion Methods

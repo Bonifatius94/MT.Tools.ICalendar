@@ -22,11 +22,13 @@ namespace MT.Tools.ICalendar.DataObjects.ComponentProperty
 
         #region Members
 
+        public string Markup => "PERCENT-COMPLETE";
         public ComponentPropertyType Type => ComponentPropertyType.PercentComplete;
 
         public IEnumerable<IPropertyParameter> Parameters { get; private set; } = new List<IPropertyParameter>();
 
         public IntegerValue Percentage { get; set; }
+        public IPropertyValue Value => Percentage;
 
         #endregion Members
 
@@ -35,24 +37,24 @@ namespace MT.Tools.ICalendar.DataObjects.ComponentProperty
         public void Deserialize(string content)
         {
             // make sure that the parameter starts with PERCENT-COMPLETE
-            if (!content.ToUpper().StartsWith("PERCENT-COMPLETE")) { throw new ArgumentException("Invalid percent complete detected! Component property needs to start with PERCENT-COMPLETE keyword!"); }
+            if (!content.ToUpper().StartsWith(Markup)) { throw new ArgumentException($"Invalid percent complete detected! Component property needs to start with { Markup } keyword!"); }
 
             // deserialize parameters
             Parameters =
-                content.Substring("PERCENT-COMPLETE".Length, content.IndexOf(':') - "PERCENT-COMPLETE".Length)
+                content.Substring(Markup.Length, content.IndexOf(':') - Markup.Length)
                 .Split(';', StringSplitOptions.RemoveEmptyEntries)
                 .Select(x => CalendarFactory.DeserializePropertyParameter(x))
                 .ToList();
 
             // extract the value content
-            string valueContent = content.Substring(content.IndexOf(':')).Trim();
+            string valueContent = content.Substring(content.IndexOf(':') + 1).Trim();
             Percentage = ObjectSerializer.Deserialize<IntegerValue>(valueContent);
         }
 
         public string Serialize()
         {
             string paramsContent = Parameters.Select(x => x.Serialize()).Aggregate((x, y) => x + ";" + y);
-            return $"PERCENT-COMPLETE{ (string.IsNullOrEmpty(paramsContent) ? "" : ";" + paramsContent) }:{ Percentage.Serialize() }";
+            return $"{ Markup }{ (string.IsNullOrEmpty(paramsContent) ? "" : ";" + paramsContent) }:{ Percentage.Serialize() }";
         }
 
         #endregion Methods
